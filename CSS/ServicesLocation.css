@@ -16,11 +16,20 @@
     box-sizing: border-box;
 }
 
+/* =========== ESTILOS BASE =========== */
 body {
-    background-color: var(--bg-dark);
-    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
+    background: linear-gradient(
+        var(--gradient-start), 
+        var(--gradient-end)
+    ), url('/IMG/CityLocation.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-color);
 }
 
 /* Contenedor principal */
