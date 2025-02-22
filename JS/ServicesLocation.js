@@ -234,7 +234,7 @@ function handleLogout() {
     
     // Redirigir después de la animación
     setTimeout(() => {
-        window.location.href = '../index.html';
+        window.location.href = 'index.html';
     }, 2000);
 }
 
