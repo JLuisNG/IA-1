@@ -25,7 +25,7 @@ body {
     background: linear-gradient(
         var(--gradient-start), 
         var(--gradient-end)
-    ), url('../IMG/CityLocation.jpg');
+    ), url('CityLocation.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
