@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingScreen.style.display = 'flex';
         loadingScreen.style.opacity = '1';
         setTimeout(() => {
-            window.location.href = '/HTML/Login.html';
+            window.location.href = 'Login.html';
         }, 2000);
     });
 
