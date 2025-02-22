@@ -42,7 +42,6 @@ function saveTherapists() {
 // Función para exportar datos
 function exportTherapists() {
     const currentTherapists = [...therapists];
-    
     const therapistsString = JSON.stringify(currentTherapists, null, 2)
         .replace(/"([^"]+)":/g, '$1:')
         .replace(/"/g, "'");
@@ -123,41 +122,34 @@ function initializeFilters() {
         t.areas.split(',').map(a => a.trim())
     ))].sort();
 
-    // Llenar el filtro de áreas
-    const areaFilter = document.getElementById('areaFilter');
-    if (areaFilter) {
-        areaFilter.innerHTML = '<option value="">Todas las áreas</option>';
-        areas.forEach(area => {
-            const option = document.createElement('option');
-            option.value = area;
-            option.textContent = area;
-            areaFilter.appendChild(option);
-        });
-    }
+    // Llenar filtros
+    const filterConfigs = [
+        { id: 'areaFilter', options: areas, defaultText: 'Todas las áreas' },
+        { id: 'disciplineFilter', options: Object.entries(DISCIPLINES), defaultText: 'Todas las disciplinas' },
+        { id: 'categoryFilter', options: Object.entries(CATEGORIES), defaultText: 'Todas las categorías' }
+    ];
 
-    // Llenar el filtro de disciplinas
-    const disciplineFilter = document.getElementById('disciplineFilter');
-    if (disciplineFilter) {
-        disciplineFilter.innerHTML = '<option value="">Todas las disciplinas</option>';
-        Object.entries(DISCIPLINES).forEach(([key, value]) => {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = value;
-            disciplineFilter.appendChild(option);
-        });
-    }
-
-    // Llenar el filtro de categorías
-    const categoryFilter = document.getElementById('categoryFilter');
-    if (categoryFilter) {
-        categoryFilter.innerHTML = '<option value="">Todas las categorías</option>';
-        Object.entries(CATEGORIES).forEach(([key, value]) => {
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = value;
-            categoryFilter.appendChild(option);
-        });
-    }
+    filterConfigs.forEach(config => {
+        const filter = document.getElementById(config.id);
+        if (filter) {
+            filter.innerHTML = `<option value="">${config.defaultText}</option>`;
+            if (Array.isArray(config.options)) {
+                config.options.forEach(option => {
+                    const optionEl = document.createElement('option');
+                    optionEl.value = option;
+                    optionEl.textContent = option;
+                    filter.appendChild(optionEl);
+                });
+            } else {
+                config.options.forEach(([key, value]) => {
+                    const optionEl = document.createElement('option');
+                    optionEl.value = key;
+                    optionEl.textContent = value;
+                    filter.appendChild(optionEl);
+                });
+            }
+        }
+    });
 }
 
 // Funciones de manejo de terapeutas
@@ -176,101 +168,17 @@ function openEditModal(therapistName) {
 
     const form = document.getElementById('editTherapistForm');
     
-    // Llenar el formulario con los datos actuales
-    document.getElementById('editName').value = therapist.name;
-    document.getElementById('editType').value = therapist.type;
-    document.getElementById('editCategory').value = therapist.category;
-    document.getElementById('editAreas').value = therapist.areas;
-    document.getElementById('editLanguages').value = therapist.languages || '';
-    document.getElementById('editPhone').value = therapist.phone || '';
-    document.getElementById('editEmail').value = therapist.email || '';
-    document.getElementById('editStatus').value = therapist.status || 'active';
-    
-    // Guardar el nombre original para referencia
-    form.dataset.originalName = therapist.name;
-    document.getElementById('editModal').classList.add('active');
-}
-
-// Inicialización y event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar tabla y filtros
-    renderTherapists(therapists);
-    initializeFilters();
-
-    // Inicializar select de tipos en el modal
-    const editType = document.getElementById('editType');
-    if (editType) {
-        editType.innerHTML = Object.entries(DISCIPLINES).map(([key, value]) => 
-            `<option value="${key}">${value}</option>`
-        ).join('');
-    }
-
-    // Inicializar select de categorías en el modal
-    const editCategory = document.getElementById('editCategory');
-    if (editCategory) {
-        editCategory.innerHTML = Object.entries(CATEGORIES).map(([key, value]) => 
-            `<option value="${key}">${value}</option>`
-        ).join('');
-    }
-
-    // Agregar botón de exportar
-    const actionsContainer = document.querySelector('.main-content__header');
-    if (actionsContainer) {
-        const exportButton = document.createElement('button');
-        exportButton.className = 'add-therapist-btn';
-        exportButton.style.marginLeft = '10px';
-        exportButton.innerHTML = '<i class="fas fa-download"></i> Exportar Datos';
-        exportButton.onclick = exportTherapists;
-        actionsContainer.appendChild(exportButton);
-    }
-
-    // Event listeners para búsqueda y filtros
-    const searchInput = document.querySelector('.search-input');
-    searchInput?.addEventListener('input', (e) => {
-        renderTherapists(filterTherapists(e.target.value));
-    });
-
-    ['areaFilter', 'disciplineFilter', 'categoryFilter'].forEach(filterId => {
-        const filter = document.getElementById(filterId);
-        filter?.addEventListener('change', () => {
-            renderTherapists(applyFilters());
-        });
-    });
-
-    // Setup del modal
-    setupModal();
-});
-
-function setupModal() {
-    const modal = document.getElementById('editModal');
-    const addBtn = document.getElementById('addTherapistBtn');
-    const closeBtn = document.getElementById('closeEditModal');
-    const cancelBtn = document.getElementById('cancelEdit');
-    const form = document.getElementById('editTherapistForm');
-
-    // Botón de agregar
-    addBtn?.addEventListener('click', () => {
-        form.reset();
-        form.dataset.originalName = '';
-        modal.classList.add('active');
-    });
-
-    // Cerrar modal
-    [closeBtn, cancelBtn].forEach(btn => {
-        btn?.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-    });
-
-    // Submit del formulario
-    form?.addEventListener('submit', handleFormSubmit);
-
-    // Cerrar al hacer clic fuera
-    modal?.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.remove('active');
+    // Llenar el formulario
+    const fields = ['Name', 'Type', 'Category', 'Areas', 'Languages', 'Phone', 'Email', 'Status'];
+    fields.forEach(field => {
+        const element = document.getElementById(`edit${field}`);
+        if (element) {
+            element.value = therapist[field.toLowerCase()] || '';
         }
     });
+    
+    form.dataset.originalName = therapist.name;
+    document.getElementById('editModal').classList.add('active');
 }
 
 function handleFormSubmit(e) {
@@ -308,3 +216,115 @@ function handleFormSubmit(e) {
     initializeFilters();
     document.getElementById('editModal').classList.remove('active');
 }
+
+// Función de logout
+function handleLogout() {
+    const loadingScreen = document.getElementById('loading-screen');
+    
+    if (!loadingScreen) return;
+    
+    // Mostrar y activar la pantalla de carga
+    loadingScreen.style.display = 'flex';
+    loadingScreen.offsetHeight; // Forzar reflow
+    loadingScreen.classList.add('show');
+    
+    // Limpiar datos locales
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Redirigir después de la animación
+    setTimeout(() => {
+        window.location.href = '../index.html';
+    }, 2000);
+}
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicializar tabla y filtros
+    renderTherapists(therapists);
+    initializeFilters();
+
+    // Configurar modal
+    const modal = document.getElementById('editModal');
+    const addBtn = document.getElementById('addTherapistBtn');
+    const closeBtn = document.getElementById('closeEditModal');
+    const cancelBtn = document.getElementById('cancelEdit');
+    const form = document.getElementById('editTherapistForm');
+
+    // Inicializar selects del modal
+    ['Type', 'Category'].forEach(field => {
+        const select = document.getElementById(`edit${field}`);
+        if (select) {
+            const options = field === 'Type' ? DISCIPLINES : CATEGORIES;
+            select.innerHTML = Object.entries(options)
+                .map(([key, value]) => `<option value="${key}">${value}</option>`)
+                .join('');
+        }
+    });
+
+    // Event listeners
+    addBtn?.addEventListener('click', () => {
+        form.reset();
+        form.dataset.originalName = '';
+        modal.classList.add('active');
+    });
+
+    [closeBtn, cancelBtn].forEach(btn => {
+        btn?.addEventListener('click', () => modal.classList.remove('active'));
+    });
+
+    form?.addEventListener('submit', handleFormSubmit);
+
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+    });
+
+    // Configurar búsqueda y filtros
+    const searchInput = document.querySelector('.search-input');
+    searchInput?.addEventListener('input', (e) => {
+        renderTherapists(filterTherapists(e.target.value));
+    });
+
+    ['areaFilter', 'disciplineFilter', 'categoryFilter'].forEach(filterId => {
+        const filter = document.getElementById(filterId);
+        filter?.addEventListener('change', () => {
+            renderTherapists(applyFilters());
+        });
+    });
+
+    // Configurar menú de usuario y logout
+    const userMenuToggle = document.getElementById('user-menu-toggle');
+    const userDropdown = document.getElementById('user-dropdown');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    userMenuToggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userDropdown?.classList.toggle('active');
+        if (userDropdown) {
+            userDropdown.style.display = userDropdown.classList.contains('active') ? 'block' : 'none';
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!userMenuToggle?.contains(e.target) && !userDropdown?.contains(e.target)) {
+            userDropdown?.classList.remove('active');
+            userDropdown.style.display = 'none';
+        }
+    });
+
+    logoutBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleLogout();
+    });
+
+    // Agregar botón de exportar
+    const actionsContainer = document.querySelector('.main-content__header');
+    if (actionsContainer) {
+        const exportButton = document.createElement('button');
+        exportButton.className = 'add-therapist-btn';
+        exportButton.style.marginLeft = '10px';
+        exportButton.innerHTML = '<i class="fas fa-download"></i> Exportar Datos';
+        exportButton.onclick = exportTherapists;
+        actionsContainer.appendChild(exportButton);
+    }
+});
