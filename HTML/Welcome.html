@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente de MHC</title>
+    <link rel="stylesheet" href="/CSS/Welcome.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <!-- Pantalla de carga -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-screen__content">
+            <div class="spinner"></div>
+            <p>Cargando...</p>
+        </div>
+    </div>
+    
+    <!-- Barra superior -->
+    <header class="header">
+        <div class="header__logo">
+            <img src="/IMG/32A90059-EE8B-4689-A398-D08AC03A1AC6.jpeg" alt="Logo" class="header__logo-img">
+        </div>
+        <nav class="header__nav">
+            <ul class="header__menu">
+                <li class="header__item"><a href="/HTML/Ubicacion.HTml" class="header__link">UBICACIÓN DE SERVICIOS</a></li>
+                <li class="header__item"><a href="/HTML/Pacients.html" class="header__link">PACIENTES</a></li>
+                <li class="header__item"><a href="#" class="header__link">FRECUENCIAS</a></li>
+                <li class="header__item"><a href="#" class="header__link">THERAPY SYNC</a></li>
+                <li class="header__item"><a href="#" class="header__link">REFERRALS NEWS</a></li>
+                <li class="header__item"><a href="#" class="header__link">SOPORTE</a></li>
+            </ul>
+        </nav>
+        <div class="header__user">
+            <span class="header__username" id="user-menu-toggle">Luis Nava <i class="arrow-down"></i></span>
+            <ul class="header__dropdown" id="user-dropdown">
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link">Ver Credenciales</a>
+                </li>
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link" id="logout-btn">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="main-content__text">
+            <h1 class="main-content__title">¿Como puedo ayudarte el dia de hoy?</h1>
+            <p class="main-content__description">Explora las herramientas disponibles para optimizar tus procesos.</p>
+        </div>
+    </main>
+    
+    <!-- Contador de pacientes -->
+    <div class="patient-counter">
+        <div class="counter-circle">
+            <span class="counter-number">6,467</span>
+            <span class="counter-label">Pacientes Atendidos</span>
+        </div>
+    </div>
+    
+    <!-- Estadísticas -->
+    <section class="stats-container">
+        <div class="stat-card">
+            <h3 class="stat-title">Casos Activos</h3>
+            <div class="stat-value" data-value="476">476</div>
+            <p class="stat-description">Pacientes actualmente en tratamiento</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3 class="stat-title">Tiempo de Respuesta</h3>
+            <div class="stat-value" data-value="45">45m</div>
+            <p class="stat-description">Promedio de tiempo de asignación</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3 class="stat-title">Terapeutas Disponibles</h3>
+            <div class="stat-value" data-value="340">340</div>
+            <p class="stat-description">Profesionales listos para asignación</p>
+        </div>
+        
+        <div class="stat-card">
+            <h3 class="stat-title">Tasa de Aceptación</h3>
+            <div class="stat-value" data-value="89">89%</div>
+            <p class="stat-description">De casos asignados exitosamente</p>
+        </div>
+    </section>
+    
+    <!-- Acciones rápidas -->
+    <section class="quick-actions">
+        <h2 class="quick-actions__title">Acciones Rápidas</h2>
+        <div class="actions-grid">
+            <div class="action-card" onclick="window.location.href='/nuevo-caso'">
+                <div class="action-icon">📝</div>
+                <h3 class="action-title">Nuevo Caso</h3>
+                <p class="action-description">Registrar nueva solicitud de paciente</p>
+            </div>
+            
+            <div class="action-card" onclick="window.location.href='/asignar-terapeuta'">
+                <div class="action-icon">👥</div>
+                <h3 class="action-title">Asignar Terapeuta</h3>
+                <p class="action-description">Buscar y asignar terapeuta disponible</p>
+            </div>
+            
+            <div class="action-card" onclick="window.location.href='/therapy-sync'">
+                <div class="action-icon">🔄</div>
+                <h3 class="action-title">Therapy Sync</h3>
+                <p class="action-description">Actualizar información en el sistema</p>
+            </div>
+            
+            <div class="action-card" onclick="window.location.href='/reportes'">
+                <div class="action-icon">📊</div>
+                <h3 class="action-title">Reportes</h3>
+                <p class="action-description">Ver estadísticas y análisis</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__section footer__about">
+                <img src="/IMG/32A90059-EE8B-4689-A398-D08AC03A1AC6.jpeg" alt="Motive Homecare Logo" class="footer__logo">
+                <p class="footer__description">
+                    Motive Homecare proporciona servicios de terapia física, ocupacional y del habla de alta calidad con profesionales comprometidos con mejorar la calidad de vida de nuestros pacientes.
+                </p>
+                <p class="footer__founder">
+                    Fundado por <span class="footer__founder-name">Alex Martinez</span>
+                </p>
+            </div>
+            
+            <div class="footer__section footer__links">
+                <h3 class="footer__title">Enlaces Rápidos</h3>
+                <ul class="footer__menu">
+                    <li><a href="#" class="footer__link">Inicio</a></li>
+                    <li><a href="#" class="footer__link">Pacientes</a></li>
+                    <li><a href="#" class="footer__link">Terapeutas</a></li>
+                    <li><a href="#" class="footer__link">Reportes</a></li>
+                    <li><a href="#" class="footer__link">Soporte</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer__section footer__contact">
+                <h3 class="footer__title">Contacto</h3>
+                <ul class="footer__contact-list">
+                    <li class="footer__contact-item">
+                        <i class="fas fa-map-marker-alt footer__icon"></i>
+                        <span>Los Angeles, California</span>
+                    </li>
+                    <li class="footer__contact-item">
+                        <i class="fas fa-phone-alt footer__icon"></i>
+                        <span>+1 (213) 495-0092</span>
+                    </li>
+                    <li class="footer__contact-item">
+                        <i class="fas fa-envelope footer__icon"></i>
+                        <span>info@motivehomecare.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer__bottom">
+            <p class="footer__copyright">
+                &copy; 2025 Motive Homecare. Todos los derechos reservados.
+            </p>
+            <div class="footer__social">
+                <a href="#" class="footer__social-link" title="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="footer__social-link" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="footer__social-link" title="LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="#" class="footer__social-link" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+    <script src="/JS/Welcome.js"></script>
+</body>
+</html>
