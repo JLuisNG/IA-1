@@ -239,7 +239,7 @@ loginForm.addEventListener("submit", function(event) {
       
       // Redirigir después de una pequeña animación
       setTimeout(() => {
-          window.location.href = "HTML/Welcome.html";
+        window.location.href = "/IA-1/HTML/Welcome.html";
       }, 900);
   } else {
       // Muestra error con efecto más sutil
