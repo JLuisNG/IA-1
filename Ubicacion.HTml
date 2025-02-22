@@ -60,15 +60,9 @@
                         </select>
                         <select id="disciplineFilter" class="filter-select">
                             <option value="">Todas las disciplinas</option>
-                            <option value="PT">Physical Therapy</option>
-                            <option value="OT">Occupational Therapy</option>
-                            <option value="ST">Speech Therapy</option>
                         </select>
                         <select id="categoryFilter" class="filter-select">
                             <option value="">Todas las categorías</option>
-                            <option value="premium">Premium (Verde)</option>
-                            <option value="standard">Estándar (Azul)</option>
-                            <option value="basic">Básico (Naranja)</option>
                         </select>
                     </div>
                 </div>
@@ -97,115 +91,135 @@
         </div>
 
         <!-- Modal de Edición -->
-<!-- Modal de Edición -->
-<div class="edit-modal" id="editModal">
-    <div class="edit-modal-content">
-        <div class="edit-modal-header">
-            <h3 class="modal-title">Editar Terapeuta</h3>
-            <button class="modal-close" id="closeEditModal">
-                <i class="fas fa-times"></i>
-            </button>
+        <div class="edit-modal" id="editModal">
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3 class="modal-title">
+                        <i class="fas fa-user-edit"></i>
+                        Editar Terapeuta
+                    </h3>
+                    <button class="modal-close" id="closeEditModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="edit-modal-body">
+                    <form id="editTherapistForm">
+                        <!-- Información Personal -->
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-user"></i>
+                                    Nombre
+                                </label>
+                                <input type="text" id="editName" required>
+                            </div>
+
+                            <div class="form-row two-cols">
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fas fa-briefcase"></i>
+                                        Tipo
+                                    </label>
+                                    <select id="editType" required>
+                                        <option value="">Seleccionar tipo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fas fa-star"></i>
+                                        Categoría
+                                    </label>
+                                    <select id="editCategory" required>
+                                        <option value="">Seleccionar categoría</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Áreas e Idiomas -->
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Áreas de Cobertura
+                                </label>
+                                <textarea id="editAreas" required rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-language"></i>
+                                    Idiomas
+                                </label>
+                                <input type="text" id="editLanguages" required>
+                            </div>
+                        </div>
+
+                        <!-- Contacto -->
+                        <div class="form-section">
+                            <div class="form-row two-cols">
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fas fa-phone"></i>
+                                        Teléfono
+                                    </label>
+                                    <input type="tel" id="editPhone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fas fa-envelope"></i>
+                                        Email
+                                    </label>
+                                    <input type="email" id="editEmail" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estado y Configuración -->
+                        <div class="form-section">
+                            <div class="form-row two-cols">
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fas fa-toggle-on"></i>
+                                        Estado
+                                    </label>
+                                    <select id="editStatus">
+                                        <option value="active">Activo</option>
+                                        <option value="NO PTA">NO PTA</option>
+                                        <option value="pending">Documentos Pendientes</option>
+                                        <option value="unsigned">No ha firmado</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fas fa-clock"></i>
+                                        Disponibilidad
+                                    </label>
+                                    <select id="editAvailability">
+                                        <option value="full">Tiempo Completo</option>
+                                        <option value="part">Medio Tiempo</option>
+                                        <option value="weekends">Solo Fines de Semana</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" id="cancelEdit">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-save" form="editTherapistForm">
+                        <i class="fas fa-save"></i>
+                        Guardar Cambios
+                    </button>
+                </div>
+            </div>
         </div>
-        
-        <div class="edit-modal-body">
-            <form id="editTherapistForm">
-                <!-- Información Personal -->
-                <div class="form-section">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Nombre</label>
-                            <input type="text" id="editName" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row two-cols">
-                        <div class="form-group">
-                            <label>Tipo</label>
-                            <select id="editType" required>
-                                <option value="PT">Physical Therapy</option>
-                                <option value="PTA">Physical Therapy Assistant</option>
-                                <option value="OT">Occupational Therapy</option>
-                                <option value="COTA">Certified OT Assistant</option>
-                                <option value="ST">Speech Therapy</option>
-                                <option value="STA">Speech Therapy Assistant</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Categoría</label>
-                            <select id="editCategory" required>
-                                <option value="premium">Premium (Verde)</option>
-                                <option value="standard">Estándar (Azul)</option>
-                                <option value="basic">Básico (Naranja)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Áreas e Idiomas -->
-                <div class="form-section">
-                    <div class="form-group">
-                        <label>Áreas de Cobertura</label>
-                        <textarea id="editAreas" required rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Idiomas</label>
-                        <input type="text" id="editLanguages" required>
-                    </div>
-                </div>
-
-                <!-- Contacto -->
-                <div class="form-section">
-                    <div class="form-row two-cols">
-                        <div class="form-group">
-                            <label>Teléfono</label>
-                            <input type="tel" id="editPhone" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="editEmail" required>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Estado y Configuración -->
-                <div class="form-section">
-                    <div class="form-row two-cols">
-                        <div class="form-group">
-                            <label>Estado</label>
-                            <select id="editStatus">
-                                <option value="active">Activo</option>
-                                <option value="NO PTA">NO PTA</option>
-                                <option value="pending">Documentos Pendientes</option>
-                                <option value="unsigned">No ha firmado</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Disponibilidad</label>
-                            <select id="editAvailability">
-                                <option value="full">Tiempo Completo</option>
-                                <option value="part">Medio Tiempo</option>
-                                <option value="weekends">Solo Fines de Semana</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div class="edit-modal-footer">
-            <button type="button" class="btn-cancel" id="cancelEdit">
-                <i class="fas fa-times"></i> Cancelar
-            </button>
-            <button type="submit" class="btn-save" form="editTherapistForm">
-                <i class="fas fa-save"></i> Guardar Cambios
-            </button>
-        </div>
-    </div>
-</div>
     </main>
 
-    <script src="./JS/ServicesLocation.js"></script>
-    <script src="./JS/Login.js"></script>
     <script src="./JS/ServicesLocation.js"></script>
 </body>
 </html>

@@ -394,3 +394,327 @@ body {
         transform: translateY(0);
     }
 }
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.form-group option {
+    width: 100%;
+    padding: 0.75rem;
+    background: #2a3341;  /* Color más oscuro para mejor contraste */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #ffffff;  /* Texto blanco para mejor legibilidad */
+    font-size: 0.9375rem;
+    transition: all 0.2s;
+}
+
+.form-group select option {
+    background: #2a3341;  /* Mismo color que el select */
+    color: #ffffff;
+    padding: 10px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: #3a4659;  /* Color más claro al focusear */
+}
+
+/* Estilos específicos para el modal y sus elementos */
+.edit-modal-content {
+    background: #1e2530;  /* Color de fondo más oscuro */
+}
+
+.edit-modal-header {
+    background: #151922;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.edit-modal-body {
+    background: #1e2530;
+}
+
+.form-group label {
+    color: rgba(255, 255, 255, 0.9);  /* Labels más visibles */
+    font-weight: 500;
+}
+
+
+/* Estilos para la tabla de terapeutas */
+.therapists-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+}
+
+.therapists-table th {
+    text-align: left;
+    padding: 15px;
+    background: rgba(24, 29, 37, 0.95);
+    color: var(--text-primary);
+    font-weight: 500;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Fondo con blur para las filas de la tabla */
+.therapists-table tr {
+    background: rgba(30, 37, 48, 0.85);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+.therapists-table tr:hover {
+    background: rgba(42, 51, 65, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.therapists-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Estilos para las categorías */
+.name-premium {
+    color: #10b981 !important;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.name-standard {
+    color: #3b82f6 !important;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.name-basic {
+    color: #f97316 !important;
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+}
+
+/* Estilos para los botones de acción */
+.action-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s;
+    margin: 0 5px;
+}
+
+.action-btn:hover {
+    color: #3b82f6;
+    transform: scale(1.1);
+}
+
+/* Estado del terapeuta */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-active {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.status-no-pta {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+/* Efecto de glassmorphism para la tabla completa */
+.therapists-table-container {
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(30, 37, 48, 0.75);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Email y teléfono más legibles */
+.therapists-table td:nth-child(5),
+.therapists-table td:nth-child(6) {
+    font-family: monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+/* Áreas con mejor legibilidad */
+.therapists-table td:nth-child(3) {
+    line-height: 1.4;
+    max-width: 300px;
+}
+
+
+/* Modal principal */
+.edit-modal {
+    backdrop-filter: blur(8px);
+}
+
+.edit-modal-content {
+    background: linear-gradient(145deg, #1a1e2e, #2a324d);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.edit-modal-header {
+    background: rgba(26, 30, 46, 0.95);
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Campos del formulario */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-group label i {
+    color: #3b82f6;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Botones del modal */
+.modal-footer {
+    padding: 1.25rem 1.5rem;
+    background: rgba(26, 30, 46, 0.95);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-save {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.btn-save:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+/* Iconos en la interfaz */
+.search-box {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input {
+    padding-left: 2.75rem !important;
+}
+
+/* Botón de agregar terapeuta */
+.add-therapist-btn {
+    background: linear-gradient(45deg, #3b82f6, #2563eb);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+}
+
+.add-therapist-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.3);
+}
+
+/* Filtros con iconos */
+.filter-select {
+    padding-left: 2.5rem !important;
+    background-position: right 1rem center, left 1rem center !important;
+    background-size: 12px auto, 14px auto !important;
+    background-repeat: no-repeat !important;
+}
+
+#areaFilter {
+    background-image: url("data:image/svg+xml,..."), url("data:image/svg+xml,...") !important;
+}
+
+#disciplineFilter {
+    background-image: url("data:image/svg+xml,..."), url("data:image/svg+xml,...") !important;
+}
+
+#categoryFilter {
+    background-image: url("data:image/svg+xml,..."), url("data:image/svg+xml,...") !important;
+}
