@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubicación de Servicios - Motive Homecare</title>
+    <link rel="stylesheet" href="./CSS/Welcome.css">
+    <link rel="stylesheet" href="./CSS/ServicesLocation.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header con navegación -->
+    <header class="header">
+        <div class="header__logo">
+            <img src="./IMG/32A90059-EE8B-4689-A398-D08AC03A1AC6.jpeg" alt="Logo" class="header__logo-img">
+        </div>
+        <nav class="header__nav">
+            <ul class="header__menu">
+                <li class="header__item"><a href="./ServicesLocation.html" class="header__link">UBICACIÓN DE SERVICIOS</a></li>
+                <li class="header__item"><a href="HTML/Pacients.html" class="header__link">PACIENTES</a></li>
+                <li class="header__item"><a href="#" class="header__link">FRECUENCIAS</a></li>
+                <li class="header__item"><a href="#" class="header__link">THERAPY SYNC</a></li>
+                <li class="header__item"><a href="#" class="header__link">REFERRALS NEWS</a></li>
+                <li class="header__item"><a href="#" class="header__link">SOPORTE</a></li>
+            </ul>
+        </nav>
+        <div class="header__user">
+            <span class="header__username" id="user-menu-toggle">Luis Nava <i class="arrow-down"></i></span>
+            <ul class="header__dropdown" id="user-dropdown">
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link">Ver Credenciales</a>
+                </li>
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link" id="logout-btn">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <div class="main-content__container">
+            <div class="main-content__header">
+                <h1 class="main-content__title">Ubicación de Servicios - Terapeutas</h1>
+                <button class="add-therapist-btn" id="addTherapistBtn">
+                    <i class="fas fa-plus"></i> Agregar Terapeuta
+                </button>
+            </div>
+
+            <div class="search-section">
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre, área, idioma...">
+                    </div>
+                    <div class="filter-container">
+                        <select id="areaFilter" class="filter-select">
+                            <option value="">Todas las áreas</option>
+                        </select>
+                        <select id="disciplineFilter" class="filter-select">
+                            <option value="">Todas las disciplinas</option>
+                            <option value="PT">Physical Therapy</option>
+                            <option value="OT">Occupational Therapy</option>
+                            <option value="ST">Speech Therapy</option>
+                        </select>
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="">Todas las categorías</option>
+                            <option value="premium">Premium (Verde)</option>
+                            <option value="standard">Estándar (Azul)</option>
+                            <option value="basic">Básico (Naranja)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="therapists-table-container">
+                <table class="therapists-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Nombre</th>
+                            <th>Áreas</th>
+                            <th>Idiomas</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Categoría</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="therapistsTableBody">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal de Edición -->
+<!-- Modal de Edición -->
+<div class="edit-modal" id="editModal">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
+            <h3 class="modal-title">Editar Terapeuta</h3>
+            <button class="modal-close" id="closeEditModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="edit-modal-body">
+            <form id="editTherapistForm">
+                <!-- Información Personal -->
+                <div class="form-section">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="editName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="editType" required>
+                                <option value="PT">Physical Therapy</option>
+                                <option value="PTA">Physical Therapy Assistant</option>
+                                <option value="OT">Occupational Therapy</option>
+                                <option value="COTA">Certified OT Assistant</option>
+                                <option value="ST">Speech Therapy</option>
+                                <option value="STA">Speech Therapy Assistant</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="editCategory" required>
+                                <option value="premium">Premium (Verde)</option>
+                                <option value="standard">Estándar (Azul)</option>
+                                <option value="basic">Básico (Naranja)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Áreas e Idiomas -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label>Áreas de Cobertura</label>
+                        <textarea id="editAreas" required rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Idiomas</label>
+                        <input type="text" id="editLanguages" required>
+                    </div>
+                </div>
+
+                <!-- Contacto -->
+                <div class="form-section">
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" id="editPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="editEmail" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado y Configuración -->
+                <div class="form-section">
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="editStatus">
+                                <option value="active">Activo</option>
+                                <option value="NO PTA">NO PTA</option>
+                                <option value="pending">Documentos Pendientes</option>
+                                <option value="unsigned">No ha firmado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Disponibilidad</label>
+                            <select id="editAvailability">
+                                <option value="full">Tiempo Completo</option>
+                                <option value="part">Medio Tiempo</option>
+                                <option value="weekends">Solo Fines de Semana</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="edit-modal-footer">
+            <button type="button" class="btn-cancel" id="cancelEdit">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+            <button type="submit" class="btn-save" form="editTherapistForm">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+</div>
+    </main>
+
+    <script src="./JS/ServicesLocation.js"></script>
+</body>
+</html>
