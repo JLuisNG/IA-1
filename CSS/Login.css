@@ -71,9 +71,6 @@
 }
 
 /* Lado frontal (login) */
-.login-card__front {
-  /* No necesitamos position absolute para el frente */
-}
 
 /* Lados traseros (recuperación de contraseña y contacto) */
 .login-card__back {
