@@ -20,7 +20,7 @@ body {
     background: linear-gradient(
         var(--gradient-start), 
         var(--gradient-end)
-    ), url('/IMG/Observatorio.jpg');
+    ), url('./IMG/Observatorio.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
