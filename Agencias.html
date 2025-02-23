@@ -3,13 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soporte - Motive Homecare</title>
+    <title>Agencias - Motive Homecare</title>
     <link rel="stylesheet" href="./CSS/Welcome.css">
-    <link rel="stylesheet" href="./CSS/Support.css">
+    <link rel="stylesheet" href="./CSS/Agencies.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Pantalla de carga -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-screen__content">
+            <div class="spinner"></div>
+            <p>Cargando...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
     <header class="header">
         <div class="header__logo">
             <a href="./Welcome.html"><img src="./IMG/32A90059-EE8B-4689-A398-D08AC03A1AC6.jpeg" alt="Logo" class="header__logo-img"> </a>
@@ -21,7 +30,7 @@
                 <li class="header__item"><a href="#" class="header__link">FRECUENCIAS</a></li>
                 <li class="header__item"><a href="#" class="header__link">THERAPY SYNC</a></li>
                 <li class="header__item"><a href="#" class="header__link">REFERRALS NEWS</a></li>
-                <li class="header__item"><a href="./Agencias.html" class="header__link">AGENCIAS</a></li>
+                <li class="header__item"><a href="./Agencias.html" class="header__link active">AGENCIAS</a></li>
                 <li class="header__item"><a href="./Support.html" class="header__link">SOPORTE</a></li>
             </ul>
         </nav>
@@ -38,8 +47,212 @@
         </div>
     </header>
 
+    <!-- Contenido principal -->
+    <main class="agencies-container">
+        <!-- Contador Global de Pacientes -->
+        <section class="global-patients-counter">
+            <div class="global-patients-card">
+                <h2>Pacientes que hemos recibido</h2>
+                <div class="global-counter">
+                    <span class="counter-number" id="totalPatientsCounter">6.467</span>
+                </div>
+            </div>
+        </section>
 
+        <!-- Sección de búsqueda y filtros -->
+        <section class="agencies-search">
+            <div class="search-box">
+                <input type="text" placeholder="Buscar agencia..." class="search-input">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <button class="add-agency-btn" onclick="openNewAgencyModal()">
+                <i class="fas fa-plus"></i>
+                Nueva Agencia
+            </button>
+        </section>
 
+        <!-- Grid de agencias -->
+        <div class="agencies-grid" id="agenciesGrid">
+            <!-- Aquí se generarán dinámicamente las tarjetas de agencias -->
+        </div>
+    </main>
+
+    <!-- Modal para nueva agencia -->
+    <div class="modal" id="newAgencyModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2>Nueva Agencia</h2>
+                <button class="modal__close" onclick="closeModal('newAgencyModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <form id="newAgencyForm" class="form">
+                    <!-- Sección de Logo -->
+                    <div class="agency-logo-upload">
+                        <div class="agency-logo-preview" id="newLogoPreview">
+                            <img src="/api/placeholder/64/64" alt="Vista previa del logo" id="newLogoImg">
+                        </div>
+                        <input type="file" id="newLogo" name="logo" accept="image/*" onchange="previewLogo('newLogo', 'newLogoPreview')">
+                        <label for="newLogo" class="logo-upload-btn">Subir Logo</label>
+                    </div>
+
+                    <!-- Información Básica en dos columnas -->
+                    <div class="form__section">
+                        <h3>Información Básica</h3>
+                        <div class="form__two-columns">
+                            <div class="form__group">
+                                <label for="newName">Nombre de la Agencia</label>
+                                <input type="text" id="newName" name="name" placeholder="Ej: Sunshine Care" required>
+                                <span class="validation-error">El nombre es obligatorio</span>
+                            </div>
+                            <div class="form__group">
+                                <label for="newEmail">Correo Electrónico</label>
+                                <input type="email" id="newEmail" name="email" placeholder="Ej: info@sunshinecare.com" required>
+                                <span class="validation-error">Ingrese un correo válido</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Contacto en dos columnas -->
+                    <div class="form__section">
+                        <h3>Información de Contacto</h3>
+                        <div class="form__two-columns">
+                            <div class="form__group">
+                                <label for="newPhone">Teléfono</label>
+                                <input type="tel" id="newPhone" name="phone" placeholder="Ej: (213) 555-1234">
+                            </div>
+                            <div class="form__group">
+                                <label for="newAddress">Dirección</label>
+                                <input type="text" id="newAddress" name="address" value="Los Angeles, California" placeholder="Ej: Los Angeles, California">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estado y Documentos en dos columnas -->
+                    <div class="form__section">
+                        <h3>Estado y Documentos</h3>
+                        <div class="form__two-columns">
+                            <div class="form__group">
+                                <label for="newStatus">Estado</label>
+                                <input type="text" id="newStatus" name="status" placeholder="Ej: Activo">
+                            </div>
+                            <div class="form__group">
+                                <label for="newDocs">Contrato Firmado / Docs Enviados</label>
+                                <input type="text" id="newDocs" name="docs" placeholder="Ej: Sí / No">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeModal('newAgencyModal')">Cancelar</button>
+                <button class="btn btn--primary" onclick="createNewAgency()">Crear Agencia</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar agencia -->
+    <div class="modal" id="editModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2>Editar Agencia</h2>
+                <button class="modal__close" onclick="closeModal('editModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <form id="editAgencyForm" class="form">
+                    <!-- Sección de Logo -->
+                    <div class="agency-logo-upload">
+                        <div class="agency-logo-preview" id="editLogoPreview">
+                            <img src="/api/placeholder/64/64" alt="Vista previa del logo" id="editLogoImg">
+                        </div>
+                        <input type="file" id="editLogo" name="logo" accept="image/*" onchange="previewLogo('editLogo', 'editLogoPreview')">
+                        <label for="editLogo" class="logo-upload-btn">Cambiar Logo</label>
+                    </div>
+
+                    <!-- Información Básica en dos columnas -->
+                    <div class="form__section">
+                        <h3>Información Básica</h3>
+                        <div class="form__two-columns">
+                            <div class="form__group">
+                                <label for="editName">Nombre de la Agencia</label>
+                                <input type="text" id="editName" name="name" placeholder="Ej: Sunshine Care" required>
+                                <span class="validation-error">El nombre es obligatorio</span>
+                            </div>
+                            <div class="form__group">
+                                <label for="editEmail">Correo Electrónico</label>
+                                <input type="email" id="editEmail" name="email" placeholder="Ej: info@sunshinecare.com" required>
+                                <span class="validation-error">Ingrese un correo válido</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Contacto en dos columnas -->
+                    <div class="form__section">
+                        <h3>Información de Contacto</h3>
+                        <div class="form__two-columns">
+                            <div class="form__group">
+                                <label for="editPhone">Teléfono</label>
+                                <input type="tel" id="editPhone" name="phone" placeholder="Ej: (213) 555-1234">
+                            </div>
+                            <div class="form__group">
+                                <label for="editAddress">Dirección</label>
+                                <input type="text" id="editAddress" name="address" placeholder="Ej: Los Angeles, California">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estado y Documentos en dos columnas -->
+                    <div class="form__section">
+                        <h3>Estado y Documentos</h3>
+                        <div class="form__two-columns">
+                            <div class="form__group">
+                                <label for="editStatus">Estado</label>
+                                <input type="text" id="editStatus" name="status" placeholder="Ej: Activo">
+                            </div>
+                            <div class="form__group">
+                                <label for="editDocs">Contrato Firmado / Docs Enviados</label>
+                                <input type="text" id="editDocs" name="docs" placeholder="Ej: Sí / No">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeModal('editModal')">Cancelar</button>
+                <button class="btn btn--primary" onclick="saveAgencyChanges()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div class="modal" id="deleteModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content modal__content--small">
+            <div class="modal__header">
+                <h2>Confirmar Eliminación</h2>
+                <button class="modal__close" onclick="closeModal('deleteModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal__body">
+                <p>¿Estás seguro que deseas eliminar esta agencia?</p>
+                <p class="warning-text">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn--secondary" onclick="closeModal('deleteModal')">Cancelar</button>
+                <button class="btn btn--danger" onclick="confirmDeleteAgency()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer__container">
             <div class="footer__section footer__about">
@@ -86,7 +299,7 @@
         
         <div class="footer__bottom">
             <p class="footer__copyright">
-                &copy; 2025 Motive Homecare. Todos los derechos reservados.
+                © 2025 Motive Homecare. Todos los derechos reservados.
             </p>
             <div class="footer__social">
                 <a href="#" class="footer__social-link" title="Facebook">
@@ -104,10 +317,7 @@
             </div>
         </div>
     </footer>
-
-    <script src="./JS/Support.js"></script>
-    <script src="./JS/ServicesLocation.js"></script>
     <script src="./JS/Welcome.js"></script>
-    <script src="./JS/Login.js"></script>
+    <script src="./JS/agencies.js"></script>
 </body>
 </html>
