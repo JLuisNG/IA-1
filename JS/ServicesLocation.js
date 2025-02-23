@@ -132,19 +132,6 @@ let therapists = JSON.parse(localStorage.getItem('therapists')) || [
       status: 'NO PTA',
       category: 'basic'
     },
-    {
-        type: 'PTA',  // Physical Therapy Assistant
-        name: 'María López',
-        areas: 'Santa Monica, Venice, Culver City',
-        languages: 'Spanish, English',
-        phone: '(310) 555-1234',
-        email: 'maria.lopez@gmail.com',
-        status: 'active',
-        category: 'standard'
-    },
-
-    
-    
     
   ];
   
