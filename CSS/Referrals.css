@@ -1,0 +1,344 @@
+/* Paleta de colores empresarial con tonos de California */
+:root {
+    --bg-primary: #1A2C4F;  /* Azul marino profundo */
+    --bg-secondary: #233D6E;  /* Azul marino ligeramente más claro */
+    --accent-color: #4A90E2;  /* Azul brillante de Silicon Valley */
+    --text-primary: #FFFFFF;
+    --text-secondary: #B0C4DE;  /* Azul claro para texto secundario */
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --input-border: rgba(255, 255, 255, 0.2);
+}
+
+/* =========== VARIABLES GLOBALES =========== */
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --gradient-start: rgba(44, 62, 80, 0.85);
+    --gradient-end: rgba(52, 152, 219, 0.85);
+    --text-color: #ffffff;
+    --hover-bg: rgba(255, 255, 255, 0.15);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --transition: all 0.3s ease;
+    --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* =========== ANIMACIONES =========== */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========== ESTILOS BASE =========== */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+}
+
+/* =========== PANTALLA DE CARGA =========== */
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 62, 80, 0.98);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: var(--transition);
+}
+
+.loading-screen__content {
+    text-align: center;
+}
+
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+}
+
+/* Estilos específicos para la página de Pacientes */
+.patients-main {
+    background: linear-gradient(
+        rgba(26, 44, 79, 0.92), 
+        rgba(35, 61, 110, 0.92)
+    ), url('../IMG/ZoomCity.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    padding: 20px 0;
+    color: var(--text-primary);
+}
+
+.patients-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(26, 44, 79, 0.85);  /* Fondo semi-transparente */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.patient-form {
+    color: var(--text-primary);
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(74, 144, 226, 0.2);
+    transition: all 0.3s ease;
+}
+
+.form-section:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color);
+}
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    color: var(--accent-color);
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(74, 144, 226, 0.3);
+}
+
+.form-section-title i {
+    margin-right: 10px;
+    color: var(--accent-color);
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.patient-info-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+}
+
+.discipline-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.discipline-group {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.discipline-group:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color);
+}
+
+.discipline-group h3 {
+    margin-bottom: 15px;
+    color: var(--accent-color);
+    font-size: 1em;
+    border-bottom: 1px solid rgba(74, 144, 226, 0.3);
+    padding-bottom: 10px;
+}
+
+.discipline-options {
+    display: flex;
+    flex-direction: column;
+}
+
+.discipline-options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.discipline-options input[type="checkbox"] {
+    margin-right: 10px;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.discipline-options input[type="checkbox"]:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-size: 16px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#available-therapists-container,
+#unavailable-therapists-container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 100px;
+}
+
+.placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    padding: 20px;
+}
+
+.submit-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.submit-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 20px rgba(74, 144, 226, 0.2);
+}
+
+.submit-btn:hover {
+    background-color: #5CA1FF;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(74, 144, 226, 0.3);
+}
+
+.submit-btn i {
+    font-size: 1.2em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .patients-container {
+        padding: 20px;
+        margin: 0 10px;
+        background: rgba(26, 44, 79, 0.95);
+        backdrop-filter: blur(8px);
+    }
+
+    .form-row,
+    .patient-info-row,
+    .discipline-selector {
+        flex-direction: column;
+        grid-template-columns: 1fr;
+    }
+
+    .form-group {
+        width: 100%;
+    }
+}
+
+/* Estilos para otras agencias */
+#other-agency {
+    margin-top: 10px;
+    display: none;
+}
+
+/* Estilos de fecha */
+.patient-date input[type="date"] {
+    color-scheme: dark;
+    background: var(--input-bg);
+}
+
+/* Personalización del selector de fecha */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* Mejoras de accesibilidad y legibilidad */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--bg-primary);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 20px;
+}
+
+/* Transiciones y efectos */
+* {
+    transition: var(--transition);
+}

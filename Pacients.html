@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referrals News - Motive Homecare</title>
+    <link rel="stylesheet" href="./CSS/Welcome.css">
+    <link rel="stylesheet" href="./CSS/Patients.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Pantalla de carga -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-screen__content">
+            <div class="spinner"></div>
+            <p>Cargando...</p>
+        </div>
+    </div>
+
+    <!-- Header con navegación (Igual al de Ubicación de Servicios) -->
+    <header class="header">
+        <div class="header__logo">
+            <a href="./Welcome.html"><img src="./IMG/32A90059-EE8B-4689-A398-D08AC03A1AC6.jpeg" alt="Logo" class="header__logo-img"> </a>
+        </div>
+        <nav class="header__nav">
+            <ul class="header__menu">
+                <li class="header__item"><a href="./Ubicacion.HTml" class="header__link">UBICACIÓN DE SERVICIOS</a></li>
+                <li class="header__item"><a href="./Pacients.html" class="header__link">PACIENTES</a></li>
+                <li class="header__item"><a href="#" class="header__link">FRECUENCIAS</a></li>
+                <li class="header__item"><a href="#" class="header__link">THERAPY SYNC</a></li>
+                <li class="header__item"><a href="./ReferralsNews.html" class="header__link">REFERRALS NEWS</a></li>
+                <li class="header__item"><a href="./Agencias.html" class="header__link">AGENCIAS</a></li>
+                <li class="header__item"><a href="./Support.html" class="header__link">SOPORTE</a></li>
+            </ul>
+        </nav>
+        <div class="header__user">
+            <span class="header__username" id="user-menu-toggle">Luis Nava <i class="arrow-down"></i></span>
+            <ul class="header__dropdown" id="user-dropdown">
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link">Ver Credenciales</a>
+                </li>
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link" id="logout-btn">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content referrals-news-main">
+        <div class="referrals-container">
+            <div class="referrals-header">
+                <h1 class="main-content__title">Referrals News</h1>
+                <div class="referrals-actions">
+                    <button class="btn-filter" id="filter-btn">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <button class="btn-export" id="export-btn">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Referidos -->
+            <div class="referrals-table-container">
+                <table class="referrals-table" id="referrals-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>PT</th>
+                            <th>PTA</th>
+                            <th>OT</th>
+                            <th>COTA</th>
+                            <th>Notas</th>
+                            <th>Disponibilidad</th>
+                            <th>Fecha de Evaluación</th>
+                            <th>Dirección</th>
+                            <th>Agencia</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="referrals-table-body">
+                        <!-- Las filas se generarán dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal de Filtros -->
+            <div class="filter-modal" id="filter-modal">
+                <div class="filter-modal-content">
+                    <div class="filter-modal-header">
+                        <h3>Filtrar Referidos</h3>
+                        <button class="close-filter-modal" id="close-filter-modal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="filter-modal-body">
+                        <div class="filter-group">
+                            <label>Fecha Desde:</label>
+                            <input type="date" id="filter-date-from">
+                        </div>
+                        <div class="filter-group">
+                            <label>Fecha Hasta:</label>
+                            <input type="date" id="filter-date-to">
+                        </div>
+                        <div class="filter-group">
+                            <label>Agencia:</label>
+                            <select id="filter-agency">
+                                <option value="">Todas las Agencias</option>
+                                <option value="unison">Unison Health Services</option>
+                                <option value="supportive">Supportive Home Health</option>
+                                <!-- Más opciones según sea necesario -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Estado:</label>
+                            <select id="filter-status">
+                                <option value="">Todos los Estados</option>
+                                <option value="pending">Pendiente</option>
+                                <option value="evaluated">Evaluado</option>
+                                <option value="scheduled">Programado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-modal-footer">
+                        <button id="apply-filters">Aplicar Filtros</button>
+                        <button id="clear-filters">Limpiar Filtros</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="./JS/Welcome.js"></script>
+    <script src="./JS/Pacients.js"></script>
+</body>
+</html>

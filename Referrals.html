@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacientes - Motive Homecare</title>
+    <link rel="stylesheet" href="./CSS/Welcome.css">
+    <link rel="stylesheet" href="./CSS/Referrals.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Pantalla de carga -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-screen__content">
+            <div class="spinner"></div>
+            <p>Cargando...</p>
+        </div>
+    </div>
+
+    <!-- Header con navegación (Igual al de Ubicación de Servicios) -->
+    <header class="header">
+        <div class="header__logo">
+            <a href="./Welcome.html"><img src="./IMG/32A90059-EE8B-4689-A398-D08AC03A1AC6.jpeg" alt="Logo" class="header__logo-img"> </a>
+        </div>
+        <nav class="header__nav">
+            <ul class="header__menu">
+                <li class="header__item"><a href="./Ubicacion.HTml" class="header__link">UBICACIÓN DE SERVICIOS</a></li>
+                <li class="header__item"><a href="./Pacients.html" class="header__link">PACIENTES</a></li>
+                <li class="header__item"><a href="#" class="header__link">FRECUENCIAS</a></li>
+                <li class="header__item"><a href="#" class="header__link">THERAPY SYNC</a></li>
+                <li class="header__item"><a href="#" class="header__link">REFERRALS NEWS</a></li>
+                <li class="header__item"><a href="./Agencias.html" class="header__link">AGENCIAS</a></li>
+                <li class="header__item"><a href="./Support.html" class="header__link">SOPORTE</a></li>
+            </ul>
+        </nav>
+        <div class="header__user">
+            <span class="header__username" id="user-menu-toggle">Luis Nava <i class="arrow-down"></i></span>
+            <ul class="header__dropdown" id="user-dropdown">
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link">Ver Credenciales</a>
+                </li>
+                <li class="header__dropdown-item">
+                    <a href="#" class="header__dropdown-link" id="logout-btn">Log Out</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content patients-main">
+        <div class="patients-container">
+            <h1 class="main-content__title">Registro de Pacientes</h1>
+            
+            <form id="patient-registration-form" class="patient-form">
+                <!-- Información Personal del Paciente -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-user"></i> Información del Paciente
+                    </h2>
+                    <div class="form-row patient-info-row">
+                        <div class="form-group patient-date">
+                            <label for="patient-admission-date">Fecha de Ingreso</label>
+                            <input type="date" id="patient-admission-date" name="patient-admission-date" required>
+                        </div>
+                        <div class="form-group patient-name">
+                            <label for="patient-name">Nombre Completo</label>
+                            <input type="text" id="patient-name" name="patient-name" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disciplinas -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-briefcase"></i> Disciplinas Necesarias
+                    </h2>
+                    <div class="discipline-selector">
+                        <div class="discipline-group">
+                            <h3>Terapia Física</h3>
+                            <div class="discipline-options">
+                                <label>
+                                    <input type="checkbox" name="discipline" value="PT"> 
+                                    PT (Physical Therapy)
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="discipline" value="PTA"> 
+                                    PTA (Physical Therapy Assistant)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="discipline-group">
+                            <h3>Terapia Ocupacional</h3>
+                            <div class="discipline-options">
+                                <label>
+                                    <input type="checkbox" name="discipline" value="OT"> 
+                                    OT (Occupational Therapy)
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="discipline" value="COTA"> 
+                                    COTA (Occupational Therapy Assistant)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="discipline-group">
+                            <h3>Terapia del Habla</h3>
+                            <div class="discipline-options">
+                                <label>
+                                    <input type="checkbox" name="discipline" value="ST"> 
+                                    ST (Speech Therapy)
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="discipline" value="STA"> 
+                                    STA (Speech Therapy Assistant)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terapeutas Disponibles -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-users"></i> Terapeutas Disponibles
+                    </h2>
+                    <div id="available-therapists-container">
+                        <!-- Se llenará dinámicamente con JavaScript -->
+                        <p class="placeholder">Selecciona las disciplinas para ver terapeutas disponibles</p>
+                    </div>
+                </div>
+
+                <!-- Dirección del Paciente -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-map-marker-alt"></i> Dirección del Paciente
+                    </h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-address">Dirección Completa</label>
+                            <input type="text" id="patient-address" name="patient-address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-zipcode">Código Postal</label>
+                            <input type="text" id="patient-zipcode" name="patient-zipcode" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agencia Referente -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-hospital"></i> Agencia Referente
+                    </h2>
+                    <div class="form-group">
+                        <label for="referral-agency">Seleccionar Agencia</label>
+                        <select id="referral-agency" name="referral-agency" required>
+                            <option value="">Selecciona una agencia</option>
+                            <option value="unison">Unison Health Services</option>
+                            <option value="supportive">Supportive Home Health</option>
+                            <option value="pegasus">Pegasus Home Health</option>
+                            <option value="destiny">Destiny Home Health</option>
+                            <option value="other">Otra Agencia</option>
+                        </select>
+                        <input type="text" id="other-agency" name="other-agency" placeholder="Nombre de otra agencia" style="display:none;">
+                    </div>
+                </div>
+
+                <!-- Notas Adicionales -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-sticky-note"></i> Notas Adicionales
+                    </h2>
+                    <div class="form-group">
+                        <label for="additional-notes">Notas</label>
+                        <textarea id="additional-notes" name="additional-notes" rows="4" placeholder="Información adicional opcional..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Terapeutas que No Cubrirán -->
+                <div class="form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-times-circle"></i> Terapeutas que No Cubrirán
+                    </h2>
+                    <div id="unavailable-therapists-container">
+                        <!-- Se llenará dinámicamente con JavaScript -->
+                        <p class="placeholder">Selecciona los terapeutas que no cubrirán este caso</p>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío -->
+                <div class="form-section submit-section">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-save"></i> Guardar Información del Paciente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="./JS/Welcome.js"></script>
+    <script src="./JS/Referals.js"></script>
+</body>
+</html>

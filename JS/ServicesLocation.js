@@ -16,7 +16,6 @@ const DISCIPLINES = {
 
 const STATUS_TYPES = {
     'active': 'Activo',
-    'NO PTA': 'NO PTA',
     'pending': 'Documentos Pendientes',
     'unsigned': 'No ha firmado'
 };
@@ -24,25 +23,138 @@ const STATUS_TYPES = {
 // Datos iniciales y funciones de almacenamiento
 let therapists = JSON.parse(localStorage.getItem('therapists')) || [
     {
-        type: 'PT',
-        name: 'Peggie McCaffrey',
-        areas: 'Inglewood, Culver City, Westchester, Playa del Rey, El Segundo, Marina del Rey, Playa Vista',
-        languages: 'english',
-        phone: '(310) 294-2556',
-        email: 'stellamarie751@gmail.com',
-        status: 'NO PTA',
-        category: 'basic'
-    }
-];
+      type: 'PT',
+      name: 'Peggie McCaffrey',
+      areas: 'Inglewood, Culver City, Westchester, Playa del Rey, El Segundo, Marina del Rey, Playa Vista',
+      languages: 'english',
+      phone: '(310) 294-2556',
+      email: 'stellamarie751@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+      name: 'Janie Rosales',
+      type: 'PTA',
+      category: 'standard',
+      areas: 'Hollywood, Silverlake, Hollywood Hills, Hancock Park, Los Feliz, Echo Park, West Hollywood',
+      languages: 'no spanish',
+      phone: '(323) 207-2488',
+      email: 'janie.rosales@gmail.com',
+      status: 'NO PTA'
+    },
+    {
+      type: 'PT',
+      name: 'Kevin Kang',
+      areas: 'Diamond Bar, Rowland Heights, Walnut, La Puente, Hacienda Heights, City of Industry, West Covina, La Mirada, Norwalk',
+      languages: 'Korean, English',
+      phone: '(626) 417-3013',
+      email: 'benjamin.kang@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+      type: 'PT',
+      name: 'Josiah Paek',
+      areas: 'Los Angeles, Koreatown, Mid-City, West Los Angeles, Santa Monica, Culver City',
+      languages: 'Korean, English',
+      phone: '(323) 793-6522',
+      email: 'josiah.paek@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+      name: 'Willie Blackwell',
+      type: 'PT',
+      category: 'premium',
+      areas: 'Lives in Gardens, 90047, 90044, 90037, 90003, 90061, 90002, 90059, 90220',
+      languages: 'bilingual',
+      phone: '(323) 640-4546',
+      email: 'WillieBlackwell872@gmail.com',
+      status: 'NO PTA'
+    },
+    {
+      type: 'PT',
+      name: 'Kate Vance',
+      areas: 'Covina, Glendora, Azusa, Baldwin Park, West Covina, San Dimas',
+      languages: 'speaks cantonese',
+      phone: '(626) 493-5516',
+      email: 'kate.vance@gmail.com',
+      status: 'SEE PTS ONLY WEEKENDS',
+      category: 'basic'
+    },
+    {
+      type: 'PT',
+      name: 'Ivan Duarte',
+      areas: 'Santa Ana, Ana Anaheim, Fullerton, some parts of Norwalk',
+      languages: 'Spanish',
+      phone: '(714) 505-4712',
+      email: 'ivan.duarte@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+      type: 'PT',
+      name: 'Romualdo Alpert Tai',
+      areas: 'Orange County, Anaheim, Orange, Santa Ana, Westminster, Fullerton, and Tustin',
+      languages: 'Chinese and therapeutic Spanish',
+      phone: '(714) 323-2564',
+      email: 'albert.tai@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+      type: 'PT',
+      name: 'Charles Benson',
+      areas: 'Live in San Pedro, cube goes up to Compton, Lawndale and Manhattan Beach (city of LA), Rialto, Alameda Hermosa Beach, San Luis Obispo, Rancho Cucamonga',
+      languages: 'A bit Spanish',
+      phone: '(310) 432-0595',
+      email: 'charles.benson@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+      type: 'PT',
+      name: 'Cynthia Ridley',
+      areas: 'Cerritos, Long Beach, Lakewood, Bellflower, Paramount, Downey',
+      languages: 'Korean',
+      phone: '(562) 434-5438',
+      email: 'cynthia.ridley@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+      type: 'PT',
+      name: 'Ronald Raymond Wed 4pm-7pm',
+      areas: 'Woodland Hills, Thousand Oaks, Agoura Hills, Calabasas, Simi Valley, Moorpark, Bell Canyon, Oak Park, West Hills, Chatsworth, Reseda, Northridge, Sherman Oaks, North Hollywood, Winnetka',
+      languages: 'Fluent Spanish',
+      phone: '(818) 662-7149',
+      email: 'ronald.raymond@gmail.com',
+      status: 'NO PTA',
+      category: 'basic'
+    },
+    {
+        type: 'PTA',  // Physical Therapy Assistant
+        name: 'María López',
+        areas: 'Santa Monica, Venice, Culver City',
+        languages: 'Spanish, English',
+        phone: '(310) 555-1234',
+        email: 'maria.lopez@gmail.com',
+        status: 'active',
+        category: 'standard'
+    },
 
-function saveTherapists() {
-    localStorage.setItem('therapists', JSON.stringify(therapists));
-}
+    
+    
+    
+  ];
+  
+  function saveTherapists() {
+      localStorage.setItem('therapists', JSON.stringify(therapists));
+  }
 
 // Función para exportar datos
 function exportTherapists() {
-    const currentTherapists = [...therapists];
-    const therapistsString = JSON.stringify(currentTherapists, null, 2)
+    const therapistsString = JSON.stringify(therapists, null, 2)
         .replace(/"([^"]+)":/g, '$1:')
         .replace(/"/g, "'");
     
@@ -88,13 +200,15 @@ function applyFilters() {
 function renderTherapists(therapistsToRender) {
     const tbody = document.querySelector('.therapists-table tbody');
     tbody.innerHTML = '';
-
+    
     therapistsToRender.forEach(therapist => {
         const tr = document.createElement('tr');
         tr.className = `category-${therapist.category}`;
         
+        const disciplineType = DISCIPLINES[therapist.type] || therapist.type;
+        
         tr.innerHTML = `
-            <td>${DISCIPLINES[therapist.type] || therapist.type}</td>
+            <td>${disciplineType}</td>
             <td class="name-${therapist.category}">${therapist.name}</td>
             <td>${therapist.areas}</td>
             <td>${therapist.languages || ''}</td>
@@ -118,36 +232,45 @@ function renderTherapists(therapistsToRender) {
 
 function initializeFilters() {
     // Obtener áreas únicas
-    const areas = [...new Set(therapists.flatMap(t => 
-        t.areas.split(',').map(a => a.trim())
-    ))].sort();
+    const areas = [...new Set(
+        therapists.flatMap(t => {
+            const areasStr = t.areas || '';
+            return areasStr
+                .split(',')
+                .map(a => a.trim())
+                .filter(a => a.length > 0);
+        })
+    )].sort((a, b) => a.localeCompare(b));
 
-    // Llenar filtros
+    // Configurar los filtros
     const filterConfigs = [
-        { id: 'areaFilter', options: areas, defaultText: 'Todas las áreas' },
-        { id: 'disciplineFilter', options: Object.entries(DISCIPLINES), defaultText: 'Todas las disciplinas' },
-        { id: 'categoryFilter', options: Object.entries(CATEGORIES), defaultText: 'Todas las categorías' }
+        { 
+            id: 'areaFilter', 
+            options: areas.map(area => [area, area]),
+            defaultText: 'Todas las áreas' 
+        },
+        { 
+            id: 'disciplineFilter', 
+            options: Object.entries(DISCIPLINES), 
+            defaultText: 'Todas las disciplinas' 
+        },
+        { 
+            id: 'categoryFilter', 
+            options: Object.entries(CATEGORIES), 
+            defaultText: 'Todas las categorías' 
+        }
     ];
 
     filterConfigs.forEach(config => {
         const filter = document.getElementById(config.id);
         if (filter) {
             filter.innerHTML = `<option value="">${config.defaultText}</option>`;
-            if (Array.isArray(config.options)) {
-                config.options.forEach(option => {
-                    const optionEl = document.createElement('option');
-                    optionEl.value = option;
-                    optionEl.textContent = option;
-                    filter.appendChild(optionEl);
-                });
-            } else {
-                config.options.forEach(([key, value]) => {
-                    const optionEl = document.createElement('option');
-                    optionEl.value = key;
-                    optionEl.textContent = value;
-                    filter.appendChild(optionEl);
-                });
-            }
+            config.options.forEach(([value, label]) => {
+                const optionEl = document.createElement('option');
+                optionEl.value = value;
+                optionEl.textContent = label;
+                filter.appendChild(optionEl);
+            });
         }
     });
 }
@@ -165,11 +288,10 @@ function deleteTherapist(name) {
 function openEditModal(therapistName) {
     const therapist = therapists.find(t => t.name === therapistName);
     if (!therapist) return;
-
-    const form = document.getElementById('editTherapistForm');
     
-    // Llenar el formulario
+    const form = document.getElementById('editTherapistForm');
     const fields = ['Name', 'Type', 'Category', 'Areas', 'Languages', 'Phone', 'Email', 'Status'];
+    
     fields.forEach(field => {
         const element = document.getElementById(`edit${field}`);
         if (element) {
@@ -223,16 +345,13 @@ function handleLogout() {
     
     if (!loadingScreen) return;
     
-    // Mostrar y activar la pantalla de carga
     loadingScreen.style.display = 'flex';
     loadingScreen.offsetHeight; // Forzar reflow
     loadingScreen.classList.add('show');
     
-    // Limpiar datos locales
     localStorage.clear();
     sessionStorage.clear();
     
-    // Redirigir después de la animación
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 2000);
@@ -240,11 +359,9 @@ function handleLogout() {
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar tabla y filtros
     renderTherapists(therapists);
     initializeFilters();
 
-    // Configurar modal
     const modal = document.getElementById('editModal');
     const addBtn = document.getElementById('addTherapistBtn');
     const closeBtn = document.getElementById('closeEditModal');
@@ -308,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (e) => {
         if (!userMenuToggle?.contains(e.target) && !userDropdown?.contains(e.target)) {
             userDropdown?.classList.remove('active');
-            userDropdown.style.display = 'none';
+            if (userDropdown) userDropdown.style.display = 'none';
         }
     });
 
