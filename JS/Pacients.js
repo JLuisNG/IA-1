@@ -1,256 +1,267 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Estados de color para disciplinas
-    const DISCIPLINE_STATES = {
-        WHITE: 'blanco',      // Estado inicial
-        ORANGE: 'naranja',    // Consultando
-        GREEN: 'verde'        // Aceptado
+    // Referencias a elementos
+    const filterBtn = document.getElementById('filter-btn');
+    const exportBtn = document.getElementById('export-btn');
+    const filterModal = document.getElementById('filter-modal');
+    const tableBody = document.getElementById('referrals-table-body');
+    const searchInput = document.querySelector('.search-input');
+
+    // Datos de ejemplo (esto vendría de tu backend)
+    let patientsData = [
+        {
+            date: '3-24-23',
+            name: 'Kruse Marian',
+            status: 'new', // rojo
+            therapists: {
+                PT: null,
+                PTA: null,
+                OT: null,
+                COTA: null,
+                ST: 'Arya',
+                STA: null
+            },
+            decline: '',
+            evalDate: '',
+            address: '429 S. Rodeo Dr.Beverly Hills,Santa CA Z',
+            agency: 'Universal'
+        },
+        // Más datos...
+    ];
+
+    // Estados de los pacientes
+    const PATIENT_STATES = {
+        NEW: 'new',           // rojo
+        ACCEPTED: 'accepted', // amarillo
+        PENDING: 'pending',   // morado
+        COMPLETED: 'completed', // blanco
+        CANCELLED: 'cancelled'  // negro
     };
 
-    // Referencias a elementos del DOM
-    const referralsTableBody = document.getElementById('referrals-table-body');
-    const filterBtn = document.getElementById('filter-btn');
-    const filterModal = document.getElementById('filter-modal');
-    const exportBtn = document.getElementById('export-btn');
+    // Estados de los terapeutas
+    const THERAPIST_STATES = {
+        UNASSIGNED: 'unassigned', // blanco
+        CONSULTING: 'consulting', // naranja
+        ACCEPTED: 'accepted'      // verde
+    };
 
-    // Función para crear celda de disciplina con selector de estado
-    function createDisciplineCell(discipline, currentState) {
-        const cell = document.createElement('td');
-        cell.classList.add('discipline-cell');
-
-        // Checkbox para disciplina
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = currentState !== DISCIPLINE_STATES.WHITE;
-
-        // Selector de estado
-        const stateSelect = document.createElement('select');
-        stateSelect.classList.add('discipline-state-select');
-        
-        // Opciones de estado
-        const states = [
-            { value: DISCIPLINE_STATES.WHITE, label: 'Sin asignar' },
-            { value: DISCIPLINE_STATES.ORANGE, label: 'Consultando' },
-            { value: DISCIPLINE_STATES.GREEN, label: 'Aceptado' }
-        ];
-
-        states.forEach(state => {
-            const option = document.createElement('option');
-            option.value = state.value;
-            option.textContent = state.label;
-            stateSelect.appendChild(option);
+    // Función para cargar datos en la tabla
+    function loadTableData(data) {
+        tableBody.innerHTML = '';
+        data.forEach(patient => {
+            const row = createPatientRow(patient);
+            tableBody.appendChild(row);
         });
-
-        // Establecer estado actual
-        stateSelect.value = currentState;
-
-        // Aplicar color de fondo según estado
-        cell.classList.add(`bg-${currentState}`);
-
-        // Cambiar estado
-        stateSelect.addEventListener('change', () => {
-            // Quitar clases de color anteriores
-            cell.classList.remove('bg-blanco', 'bg-naranja', 'bg-verde');
-            
-            // Añadir nueva clase de color
-            cell.classList.add(`bg-${stateSelect.value}`);
-
-            // Actualizar estado de la disciplina
-            updatePatientDisciplineState(
-                cell.closest('tr').dataset.patientId, 
-                discipline, 
-                stateSelect.value
-            );
-
-            // Actualizar checkbox
-            checkbox.checked = stateSelect.value !== DISCIPLINE_STATES.WHITE;
-        });
-
-        // Contenedor para agrupar checkbox y selector
-        const cellContainer = document.createElement('div');
-        cellContainer.classList.add('discipline-cell-container');
-        cellContainer.appendChild(checkbox);
-        cellContainer.appendChild(stateSelect);
-
-        cell.appendChild(cellContainer);
-        return cell;
     }
 
-    // Función para actualizar estado de disciplina de un paciente
-    function updatePatientDisciplineState(patientId, discipline, state) {
-        const patients = JSON.parse(localStorage.getItem('patients') || '[]');
-        const patientIndex = patients.findIndex(p => p.id.toString() === patientId);
+    // Crear fila de paciente
+    function createPatientRow(patient) {
+        const row = document.createElement('tr');
+        row.classList.add(`row-${patient.status || 'new'}`);
 
-        if (patientIndex !== -1) {
-            // Asegurar que existe el objeto de estados de disciplina
-            if (!patients[patientIndex].disciplineStates) {
-                patients[patientIndex].disciplineStates = {};
+        const cells = [
+            { text: patient.date, class: 'date-cell' },
+            { text: patient.name },
+            createTherapistCell('PT', patient.therapists?.PT),
+            createTherapistCell('PTA', patient.therapists?.PTA),
+            createTherapistCell('OT', patient.therapists?.OT),
+            createTherapistCell('COTA', patient.therapists?.COTA),
+            createTherapistCell('ST', patient.therapists?.ST),
+            createTherapistCell('STA', patient.therapists?.STA),
+            { text: patient.decline || '-', class: 'decline-cell' },
+            { text: patient.evalDate || '-' },
+            { text: patient.address },
+            { text: patient.agency }
+        ];
+
+        cells.forEach(cell => {
+            if (typeof cell === 'object' && !(cell instanceof Node)) {
+                const td = document.createElement('td');
+                td.textContent = cell.text;
+                if (cell.class) td.classList.add(cell.class);
+                row.appendChild(td);
+            } else {
+                row.appendChild(cell);
             }
+        });
 
-            // Actualizar estado de la disciplina
-            patients[patientIndex].disciplineStates[discipline] = state;
+        return row;
+    }
 
-            // Guardar cambios
-            localStorage.setItem('patients', JSON.stringify(patients));
+    // Crear celda de terapeuta
+    function createTherapistCell(type, currentTherapist) {
+        const cell = document.createElement('td');
+        cell.classList.add('therapist-cell');
+
+        if (currentTherapist) {
+            cell.textContent = currentTherapist;
+            cell.classList.add('state-accepted');
+        } else {
+            cell.classList.add('state-unassigned');
         }
-    }
 
-    // Función para cargar y renderizar pacientes
-    function loadPatients() {
-        const patients = JSON.parse(localStorage.getItem('patients') || '[]');
-        referralsTableBody.innerHTML = '';
-
-        patients.forEach((patient, index) => {
-            const row = document.createElement('tr');
-            row.dataset.patientId = patient.id;
+        // Hacer la celda editable
+        cell.addEventListener('dblclick', function() {
+            const currentState = this.className.includes('state-accepted') ? 'accepted' : 'unassigned';
+            const select = createTherapistSelect(type, currentState);
             
-            // Formatear fecha
-            const formattedDate = new Date(patient.admissionDate).toLocaleDateString('es-ES');
-
-            // Crear celdas
-            const dateCell = createEditableCell(formattedDate, (newValue) => {
-                patient.admissionDate = new Date(newValue).toISOString();
-                savePatients();
-            });
-
-            const nameCell = createEditableCell(patient.patientName, (newValue) => {
-                patient.patientName = newValue;
-                savePatients();
-            });
-
-            // Disciplinas con estados
-            const disciplines = ['PT', 'PTA', 'OT', 'COTA', 'ST', 'STA'];
-            const disciplineCells = disciplines.map(disc => {
-                // Obtener estado actual de la disciplina
-                const currentState = (patient.disciplineStates && patient.disciplineStates[disc]) 
-                    || DISCIPLINE_STATES.WHITE;
-                
-                return createDisciplineCell(disc, currentState);
-            });
-
-            const notesCell = createEditableCell(patient.notes || '', (newValue) => {
-                patient.notes = newValue;
-                savePatients();
-            });
-
-            // Estado general de disponibilidad
-            const availabilityCell = createAvailabilityCell(patient);
-
-            // Celdas estáticas
-            const evaluationDateCell = createEditableCell('-', (newValue) => {
-                // Lógica para fecha de evaluación
-            });
-
-            const addressCell = createEditableCell(patient.address, (newValue) => {
-                patient.address = newValue;
-                savePatients();
-            });
-
-            const agencyCell = createEditableCell(patient.agency, (newValue) => {
-                patient.agency = newValue;
-                savePatients();
-            });
-
-            // Botones de acción
-            const actionsCell = createActionsCell(patient);
-
-            // Agregar celdas a la fila
-            row.appendChild(dateCell);
-            row.appendChild(nameCell);
-            disciplineCells.forEach(cell => row.appendChild(cell));
-            row.appendChild(notesCell);
-            row.appendChild(availabilityCell);
-            row.appendChild(evaluationDateCell);
-            row.appendChild(addressCell);
-            row.appendChild(agencyCell);
-            row.appendChild(actionsCell);
-
-            referralsTableBody.appendChild(row);
+            this.textContent = '';
+            this.appendChild(select);
+            select.focus();
         });
+
+        return cell;
     }
 
-    // Función para crear celda de disponibilidad
-    function createAvailabilityCell(patient) {
-        const cell = document.createElement('td');
+    // Crear selector de terapeuta
+    function createTherapistSelect(type, currentState) {
         const select = document.createElement('select');
-        const options = [
-            'Pendiente eval.',
-            'Consultando',
-            'Aceptado',
-            'No disponible'
-        ];
-        
-        options.forEach(option => {
-            const optionEl = document.createElement('option');
-            optionEl.value = option;
-            optionEl.textContent = option;
-            select.appendChild(optionEl);
+        select.classList.add('therapist-state-select');
+
+        // Opciones del selector
+        const therapists = {
+            PT: ['Alex', 'Peggy', 'James'],
+            PTA: ['Tanya', 'Oswaldo'],
+            OT: ['Betty', 'Rosalind', 'Gordon'],
+            COTA: ['Shari', 'April Kim', 'Ed'],
+            ST: ['Arya', 'James Steven'],
+            STA: ['Vincent', 'Wilma']
+        };
+
+        // Opción por defecto
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Seleccionar';
+        select.appendChild(defaultOption);
+
+        // Agregar terapeutas disponibles
+        therapists[type].forEach(therapist => {
+            const option = document.createElement('option');
+            option.value = therapist;
+            option.textContent = therapist;
+            select.appendChild(option);
         });
 
-        select.value = 'Pendiente eval.';
-        cell.appendChild(select);
-        return cell;
-    }
+        // Evento de cambio
+        select.addEventListener('change', function() {
+            const cell = this.parentElement;
+            const selectedTherapist = this.value;
 
-    // Función para crear celdas editables
-    function createEditableCell(value, onBlur) {
-        const cell = document.createElement('td');
-        cell.textContent = value;
-        cell.setAttribute('contenteditable', 'true');
-        cell.classList.add('editable-cell');
-        
-        cell.addEventListener('blur', () => {
-            onBlur(cell.textContent);
-        });
-
-        return cell;
-    }
-
-    // Función para crear celdas de acciones
-    function createActionsCell(patient) {
-        const cell = document.createElement('td');
-        
-        const editBtn = document.createElement('button');
-        editBtn.innerHTML = '<i class="fas fa-edit"></i>';
-        editBtn.classList.add('action-btn', 'edit-btn');
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-        deleteBtn.classList.add('action-btn', 'delete-btn');
-        
-        deleteBtn.addEventListener('click', () => {
-            if (confirm('¿Estás seguro de eliminar este paciente?')) {
-                const patients = JSON.parse(localStorage.getItem('patients') || '[]');
-                const updatedPatients = patients.filter(p => p.id !== patient.id);
-                localStorage.setItem('patients', JSON.stringify(updatedPatients));
-                loadPatients();
+            if (selectedTherapist) {
+                cell.textContent = selectedTherapist;
+                cell.classList.remove('state-unassigned');
+                cell.classList.add('state-accepted');
+            } else {
+                cell.textContent = '';
+                cell.classList.remove('state-accepted');
+                cell.classList.add('state-unassigned');
             }
         });
 
-        cell.appendChild(editBtn);
-        cell.appendChild(deleteBtn);
-
-        return cell;
+        return select;
     }
 
-    // Guardar pacientes
-    function savePatients() {
-        const patients = JSON.parse(localStorage.getItem('patients') || '[]');
-        localStorage.setItem('patients', JSON.stringify(patients));
-    }
+    // Función de búsqueda
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredData = patientsData.filter(patient => 
+            patient.name.toLowerCase().includes(searchTerm) ||
+            patient.address.toLowerCase().includes(searchTerm)
+        );
+        loadTableData(filteredData);
+    });
 
-    // Inicialización
-    function init() {
-        loadPatients();
+    // Función de filtrado
+    filterBtn.addEventListener('click', () => {
+        // Mostrar modal de filtros
+        filterModal.style.display = 'block';
+    });
+
+    // Aplicar filtros
+    document.getElementById('apply-filters').addEventListener('click', () => {
+        const dateFrom = document.getElementById('filter-date-from').value;
+        const dateTo = document.getElementById('filter-date-to').value;
+        const agency = document.getElementById('filter-agency').value;
+
+        let filteredData = [...patientsData];
+
+        if (dateFrom) {
+            filteredData = filteredData.filter(patient => {
+                const patientDate = new Date(patient.date);
+                return patientDate >= new Date(dateFrom);
+            });
+        }
+
+        if (dateTo) {
+            filteredData = filteredData.filter(patient => {
+                const patientDate = new Date(patient.date);
+                return patientDate <= new Date(dateTo);
+            });
+        }
+
+        if (agency) {
+            filteredData = filteredData.filter(patient => 
+                patient.agency.toLowerCase() === agency.toLowerCase()
+            );
+        }
+
+        loadTableData(filteredData);
+        filterModal.style.display = 'none';
+    });
+
+    // Función de exportación
+    exportBtn.addEventListener('click', () => {
+        let csvContent = "data:text/csv;charset=utf-8,";
         
-        // Configuraciones adicionales...
-        const loadingScreen = document.getElementById('loading-screen');
-        
-        setTimeout(() => {
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => loadingScreen.style.display = 'none', 300);
-        }, 2000);
-    }
+        // Headers
+        const headers = [
+            "Date", "Patient's name", "PT", "PTA", "OT", "COTA", "ST", "STA",
+            "Decline", "DATE OF EVAL", "Address", "Agency"
+        ];
+        csvContent += headers.join(",") + "\n";
 
-    // Ejecutar inicialización
-    init();
+        // Datos
+        patientsData.forEach(patient => {
+            const row = [
+                patient.date,
+                patient.name,
+                patient.therapists?.PT || "",
+                patient.therapists?.PTA || "",
+                patient.therapists?.OT || "",
+                patient.therapists?.COTA || "",
+                patient.therapists?.ST || "",
+                patient.therapists?.STA || "",
+                patient.decline || "",
+                patient.evalDate || "",
+                `"${patient.address}"`, // Usando comillas para manejar comas en direcciones
+                patient.agency
+            ];
+            csvContent += row.join(",") + "\n";
+        });
+
+        // Crear y descargar el archivo
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "referrals_export.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    // Cerrar modal
+    document.querySelector('.close-modal').addEventListener('click', () => {
+        filterModal.style.display = 'none';
+    });
+
+    // Limpiar filtros
+    document.getElementById('clear-filters').addEventListener('click', () => {
+        document.getElementById('filter-date-from').value = '';
+        document.getElementById('filter-date-to').value = '';
+        document.getElementById('filter-agency').value = '';
+        loadTableData(patientsData);
+        filterModal.style.display = 'none';
+    });
+
+    // Cargar datos iniciales
+    loadTableData(patientsData);
 });
