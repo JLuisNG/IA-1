@@ -34,7 +34,7 @@ let therapists = JSON.parse(localStorage.getItem('therapists')) || [
     },
     {
       name: 'Janie Rosales',
-      type: 'PTA',
+      type: 'PT',
       category: 'standard',
       areas: 'Hollywood, Silverlake, Hollywood Hills, Hancock Park, Los Feliz, Echo Park, West Hollywood',
       languages: 'no spanish',
