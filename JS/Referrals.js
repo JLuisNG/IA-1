@@ -205,4 +205,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Las demás funciones de filtrado y búsqueda pueden permanecer igual
 });
-
