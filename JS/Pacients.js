@@ -265,3 +265,89 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cargar datos iniciales
     loadTableData(patientsData);
 });
+
+
+// Modificar la función loadAgencies
+function loadAgencies() {
+    fetch('./JSON/agencias.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Guardar en localStorage si no existe
+            if (!localStorage.getItem('agencias')) {
+                localStorage.setItem('agencias', JSON.stringify(data));
+            }
+            agenciesData = data;
+        })
+        .catch(error => {
+            console.error('Error cargando agencias:', error);
+        });
+}
+
+patientForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Validaciones existentes...
+
+    // Obtener agencias de localStorage
+    let agencies = JSON.parse(localStorage.getItem('agencias') || '[]');
+    
+    // Encontrar la agencia seleccionada
+    const agencyIndex = agencies.findIndex(
+        agency => agency.nombre === selectedAgencyInput.value
+    );
+
+    if (agencyIndex !== -1) {
+        // Incrementar referidos
+        agencies[agencyIndex].referidos++;
+        
+        // Guardar cambios en localStorage
+        localStorage.setItem('agencias', JSON.stringify(agencies));
+    }
+
+    // Resto de tu lógica de guardado...
+});
+
+patientForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Validar servicios seleccionados
+    const selectedServices = Array.from(document.querySelectorAll('input[name="services"]:checked'))
+        .map(checkbox => checkbox.value);
+
+    if (selectedServices.length === 0) {
+        alert('Por favor, selecciona al menos un servicio');
+        return;
+    }
+
+    // Validar agencia seleccionada
+    if (!selectedAgencyInput.value) {
+        alert('Por favor, selecciona una agencia');
+        return;
+    }
+
+    // Recopilar datos del formulario
+    const patientData = {
+        name: document.getElementById('patient-name').value,
+        agency: selectedAgencyInput.value,
+        services: selectedServices,
+        address: document.getElementById('patient-address').value,
+        zipCode: document.getElementById('patient-zip').value,
+        notes: document.getElementById('notes').value
+    };
+
+    // Guardar paciente usando DataManager
+    if (DataManager.savePatient(patientData)) {
+        alert('Paciente registrado exitosamente');
+        patientForm.reset();
+        selectedAgencyInput.value = ''; 
+        agencySearch.value = ''; 
+        agenciesList.style.display = 'none';
+    } else {
+        alert('Error al registrar el paciente');
+    }
+});

@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para seleccionar una agencia
     function selectAgency(agency) {
-        selectedAgencyInput.value = agency.nombre; // Asegurar que el input oculto se actualice
+        selectedAgencyInput.value = agency.nombre;
         agencySearch.value = agency.nombre; // Mostrar la agencia seleccionada en el campo de búsqueda
         agenciesList.style.display = 'none'; // Ocultar la lista después de seleccionar
         agencySearch.focus(); // Mantener el foco en el campo para seguir editando si es necesario
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedAgency = agencies.find(a => a.nombre === patientData.agencyName);
             if (selectedAgency) {
                 selectedAgency.referidos += 1;
-                localStorage.setItem('agencias', JSON.stringify(agencies));
+                localStorage.setItem('agencias', JSON.stringify(agencias));
             }
 
             return true;
@@ -186,3 +186,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializar (no cargar agencias automáticamente)
     agenciesList.style.display = 'none'; // Ocultar la lista inicialmente
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Cargar datos de pacientes desde localStorage
+    let patientsData = DataManager.getPatients();
+
+    // Función para cargar datos en la tabla
+    function loadTableData(data) {
+        tableBody.innerHTML = '';
+        data.forEach(patient => {
+            const row = createPatientRow(patient);
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Cargar datos iniciales
+    loadTableData(patientsData);
+
+    // Las demás funciones de filtrado y búsqueda pueden permanecer igual
+});
+

@@ -1,0 +1,13 @@
+{
+    "appName": "Referidos Manager",
+    "version": "1.0.0",
+    "database": {
+      "type": "sqlite",
+      "path": "./data/referidos.db"
+    },
+    "api": {
+      "baseUrl": "http://localhost:3000"
+    }
+  }
+  
+  
