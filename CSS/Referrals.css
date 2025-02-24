@@ -1,36 +1,395 @@
-/* Paleta de colores empresarial con tonos de California */
-:root {
-    --bg-primary: #1A2C4F;  /* Azul marino profundo */
-    --bg-secondary: #233D6E;  /* Azul marino ligeramente más claro */
-    --accent-color: #4A90E2;  /* Azul brillante de Silicon Valley */
-    --text-primary: #FFFFFF;
-    --text-secondary: #B0C4DE;  /* Azul claro para texto secundario */
-    --input-bg: rgba(255, 255, 255, 0.1);
-    --input-border: rgba(255, 255, 255, 0.2);
+/* Estilos principales para la página de pacientes */
+.main-content {
+    background: linear-gradient(rgba(13, 26, 43, 0.85), rgba(13, 26, 43, 0.85)),
+        url('Oceanside.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    padding: 2rem;
 }
 
-/* =========== VARIABLES GLOBALES =========== */
-:root {
-    --primary-color: #2c3e50;
-    --accent-color: #3498db;
-    --gradient-start: rgba(44, 62, 80, 0.85);
-    --gradient-end: rgba(52, 152, 219, 0.85);
-    --text-color: #ffffff;
-    --hover-bg: rgba(255, 255, 255, 0.15);
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --transition: all 0.3s ease;
-    --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
-/* =========== ANIMACIONES =========== */
-@keyframes spin {
-    to { transform: rotate(360deg); }
+/* Título principal */
+.title {
+    color: #fff;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    font-weight: 600;
+    text-align: center;
 }
 
-@keyframes fadeInUp {
+/* Secciones de formulario */
+.form-section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+}
+
+/* Títulos de sección con iconos */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-header i {
+    font-size: 1.5rem;
+    color: #3498db;
+}
+
+.section-title {
+    color: #3498db;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+/* Campo de búsqueda de agencia */
+.search-container {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.search-container input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.search-container input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.search-container input:focus {
+    outline: none;
+}
+
+.search-icon {
+    padding: 0 1rem;
+    color: #3498db;
+    font-size: 1.2rem;
+}
+
+/* Grid de agencias */
+.agencies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.agency-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.agency-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #3498db;
+}
+
+.agency-card.selected {
+    border-color: #3498db;
+    background: rgba(52, 152, 219, 0.15);
+}
+
+.agency-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.agency-name {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.agency-details {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+/* Servicios requeridos */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.service-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.service-box h3 {
+    color: #3498db;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.service-option {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.service-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.service-option input[type="checkbox"] {
+    margin-right: 1rem;
+}
+
+/* Campos de formulario */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Botones */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+/* Estilos para la sección de Servicios Requeridos */
+.services-section {
+    background: rgba(23, 32, 56, 0.7);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem 0;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.services-title {
+    color: #3498db;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.services-title i {
+    font-size: 1.8rem;
+    color: #3498db;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.therapy-category {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.therapy-category:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+.therapy-title {
+    color: #fff;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+}
+
+.therapy-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.therapy-option {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.therapy-option:hover {
+    background: rgba(52, 152, 219, 0.2);
+}
+
+.therapy-option label {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    cursor: pointer;
+}
+
+.therapy-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3498db;
+}
+
+.therapy-name {
+    color: #fff;
+    font-weight: 500;
+}
+
+.therapy-description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .therapy-category {
+        padding: 1.2rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
@@ -38,307 +397,6 @@
     }
 }
 
-/* =========== ESTILOS BASE =========== */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    min-height: 100vh;
-}
-
-/* =========== PANTALLA DE CARGA =========== */
-.loading-screen {
-    position: fixed;
-    inset: 0;
-    background: rgba(44, 62, 80, 0.98);
-    backdrop-filter: blur(8px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    opacity: 1;
-    transition: var(--transition);
-}
-
-.loading-screen__content {
-    text-align: center;
-}
-
-.spinner {
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: var(--accent-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-    box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
-}
-
-/* Estilos específicos para la página de Pacientes */
-.patients-main {
-    background: linear-gradient(
-        rgba(26, 44, 79, 0.92), 
-        rgba(35, 61, 110, 0.92)
-    ), url('ZoomCity.jpg') no-repeat center center fixed;
-    background-size: cover;
-    min-height: 100vh;
-    padding: 20px 0;
-    color: var(--text-primary);
-}
-
-.patients-container {
-    max-width: 900px;
-    margin: 0 auto;
-    background: rgba(26, 44, 79, 0.85);  /* Fondo semi-transparente */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 15px;
-    padding: 40px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.patient-form {
-    color: var(--text-primary);
-}
-
-.form-section {
-    margin-bottom: 30px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    border: 1px solid rgba(74, 144, 226, 0.2);
-    transition: all 0.3s ease;
-}
-
-.form-section:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--accent-color);
-}
-
-.form-section-title {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-    font-size: 1.2em;
-    color: var(--accent-color);
-    padding-bottom: 10px;
-    border-bottom: 2px solid rgba(74, 144, 226, 0.3);
-}
-
-.form-section-title i {
-    margin-right: 10px;
-    color: var(--accent-color);
-}
-
-.form-row {
-    display: flex;
-    gap: 20px;
-}
-
-.patient-info-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.form-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    background: var(--input-bg);
-    border: 1px solid var(--input-border);
-    color: var(--text-primary);
-    padding: 12px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
-}
-
-.discipline-selector {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.discipline-group {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
-
-.discipline-group:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--accent-color);
-}
-
-.discipline-group h3 {
-    margin-bottom: 15px;
-    color: var(--accent-color);
-    font-size: 1em;
-    border-bottom: 1px solid rgba(74, 144, 226, 0.3);
-    padding-bottom: 10px;
-}
-
-.discipline-options {
-    display: flex;
-    flex-direction: column;
-}
-
-.discipline-options label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    cursor: pointer;
-    color: var(--text-secondary);
-}
-
-.discipline-options input[type="checkbox"] {
-    margin-right: 10px;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    outline: none;
-    transition: all 0.3s ease;
-}
-
-.discipline-options input[type="checkbox"]:checked {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
-    background-size: 16px;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-#available-therapists-container,
-#unavailable-therapists-container {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    min-height: 100px;
-}
-
-.placeholder {
-    color: rgba(255, 255, 255, 0.5);
-    text-align: center;
-    padding: 20px;
-}
-
-.submit-section {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-}
-
-.submit-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 30px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 10px 20px rgba(74, 144, 226, 0.2);
-}
-
-.submit-btn:hover {
-    background-color: #5CA1FF;
-    transform: translateY(-3px);
-    box-shadow: 0 15px 25px rgba(74, 144, 226, 0.3);
-}
-
-.submit-btn i {
-    font-size: 1.2em;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .patients-container {
-        padding: 20px;
-        margin: 0 10px;
-        background: rgba(26, 44, 79, 0.95);
-        backdrop-filter: blur(8px);
-    }
-
-    .form-row,
-    .patient-info-row,
-    .discipline-selector {
-        flex-direction: column;
-        grid-template-columns: 1fr;
-    }
-
-    .form-group {
-        width: 100%;
-    }
-}
-
-/* Estilos para otras agencias */
-#other-agency {
-    margin-top: 10px;
-    display: none;
-}
-
-/* Estilos de fecha */
-.patient-date input[type="date"] {
-    color-scheme: dark;
-    background: var(--input-bg);
-}
-
-/* Personalización del selector de fecha */
-input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-    cursor: pointer;
-}
-
-/* Mejoras de accesibilidad y legibilidad */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent-color) var(--bg-primary);
-}
-
-*::-webkit-scrollbar {
-    width: 8px;
-}
-
-*::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-*::-webkit-scrollbar-thumb {
-    background-color: var(--accent-color);
-    border-radius: 20px;
-}
-
-/* Transiciones y efectos */
-* {
-    transition: var(--transition);
+.therapy-category {
+    animation: fadeIn 0.5s ease-out forwards;
 }
