@@ -1,7 +1,7 @@
-// agencies.js
+// agencias.js
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("agencies.js cargado");
-    let agenciesList = []; // Inicializa como un array vacío por defecto
+    console.log("agencias.js cargado");
+    let agenciasList = []; // Inicializa como un array vacío por defecto
     let totalPatientsCounter = 6467; // Mantén este valor si es necesario para tu diseño
     let currentEditIndex = -1;
     let currentDeleteIndex = -1;
@@ -47,16 +47,16 @@ document.addEventListener('DOMContentLoaded', function() {
       return isValid;
     }
   
-    function loadAgencies() {
-      fetch('agencies.json') // Usa la ruta en la raíz
+    function loadagencias() {
+      fetch('agencias.json') // Usa la ruta en la raíz
         .then(response => {
           if (!response.ok) {
-            throw new Error(`Error al cargar agencies.json: ${response.status} ${response.statusText}`);
+            throw new Error(`Error al cargar agencias.json: ${response.status} ${response.statusText}`);
           }
           return response.json();
         })
         .then(data => {
-          agenciesList = data.map(agency => ({
+          agenciasList = data.map(agency => ({
             id: agency.id,
             name: agency.nombre,
             patients: agency.pacientesActivos || 0,
@@ -68,29 +68,29 @@ document.addEventListener('DOMContentLoaded', function() {
             docs: 'No',
             logo: '/api/placeholder/64/64' // Asegúrate de que esta URL sea válida o usa un placeholder real
           }));
-          localStorage.setItem('agencies', JSON.stringify(agenciesList));
-          console.log("Agencias cargadas desde JSON:", agenciesList.length);
-          renderAgencies();
+          localStorage.setItem('agencias', JSON.stringify(agenciasList));
+          console.log("Agencias cargadas desde JSON:", agenciasList.length);
+          renderagencias();
           updateTotalPatientsCounter();
         })
         .catch(error => {
-          console.error('Error loading agencies:', error);
+          console.error('Error loading agencias:', error);
           // Usar datos de localStorage o un array vacío como fallback
-          const savedAgencies = JSON.parse(localStorage.getItem('agencies') || '[]');
-          if (savedAgencies.length > 0) {
-            agenciesList = savedAgencies;
-            console.log("Agencias cargadas desde localStorage:", agenciesList.length);
+          const savedagencias = JSON.parse(localStorage.getItem('agencias') || '[]');
+          if (savedagencias.length > 0) {
+            agenciasList = savedagencias;
+            console.log("Agencias cargadas desde localStorage:", agenciasList.length);
           } else {
-            agenciesList = []; // Fallback si no hay datos
+            agenciasList = []; // Fallback si no hay datos
             console.warn("No se pudieron cargar agencias, usando lista vacía como fallback");
           }
-          renderAgencies();
+          renderagencias();
           updateTotalPatientsCounter();
         });
     }
   
-    function saveAgencies() {
-      const simplifiedAgencies = agenciesList.map(agency => ({
+    function saveagencias() {
+      const simplifiedagencias = agenciasList.map(agency => ({
         id: agency.id,
         nombre: agency.name,
         referidos: agency.referidos || 0,
@@ -101,21 +101,21 @@ document.addEventListener('DOMContentLoaded', function() {
           direccion: agency.address
         }
       }));
-      localStorage.setItem('agencies', JSON.stringify(simplifiedAgencies));
-      console.log("Agencias guardadas en localStorage:", simplifiedAgencies.length);
+      localStorage.setItem('agencias', JSON.stringify(simplifiedagencias));
+      console.log("Agencias guardadas en localStorage:", simplifiedagencias.length);
       updateTotalPatientsCounter();
     }
   
-    function renderAgencies() {
-      const agenciesGrid = document.getElementById('agenciesGrid');
-      if (!agenciesGrid) {
-        console.error('No se encontró #agenciesGrid');
+    function renderagencias() {
+      const agenciasGrid = document.getElementById('agenciasGrid');
+      if (!agenciasGrid) {
+        console.error('No se encontró #agenciasGrid');
         return;
       }
-      agenciesGrid.innerHTML = '';
+      agenciasGrid.innerHTML = '';
   
-      const sortedAgencies = agenciesList.sort((a, b) => a.name.localeCompare(b.name));
-      sortedAgencies.forEach((agency, index) => {
+      const sortedagencias = agenciasList.sort((a, b) => a.name.localeCompare(b.name));
+      sortedagencias.forEach((agency, index) => {
         const card = document.createElement('div');
         card.className = 'agency-card';
         card.innerHTML = `
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
         `;
-        agenciesGrid.appendChild(card);
+        agenciasGrid.appendChild(card);
       });
       setupSearch();
     }
@@ -175,8 +175,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       searchInput.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase().trim();
-        const agenciesGrid = document.getElementById('agenciesGrid');
-        const cards = agenciesGrid.getElementsByClassName('agency-card');
+        const agenciasGrid = document.getElementById('agenciasGrid');
+        const cards = agenciasGrid.getElementsByClassName('agency-card');
         Array.from(cards).forEach(card => {
           const agencyName = card.querySelector('.agency-card__name').textContent.toLowerCase();
           card.style.display = agencyName.includes(searchTerm) ? '' : 'none';
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTotalPatientsCounter() {
       const totalPatientsCounter = document.getElementById('totalPatientsCounter');
       if (totalPatientsCounter) {
-        const total = agenciesList.reduce((sum, agency) => sum + agency.patients, 0);
+        const total = agenciasList.reduce((sum, agency) => sum + agency.patients, 0);
         totalPatientsCounter.textContent = total.toLocaleString(); // Formato con separadores de miles
       } else {
         console.error('No se encontró #totalPatientsCounter');
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   
       const newAgency = {
-        id: `AG${String(agenciesList.length + 1).padStart(3, '0')}`,
+        id: `AG${String(agenciasList.length + 1).padStart(3, '0')}`,
         name,
         patients: 0,
         referidos: 0,
@@ -245,15 +245,15 @@ document.addEventListener('DOMContentLoaded', function() {
         docs,
         logo
       };
-      agenciesList.push(newAgency);
-      saveAgencies();
-      renderAgencies();
+      agenciasList.push(newAgency);
+      saveagencias();
+      renderagencias();
       closeModal('newAgencyModal');
     }
   
     function editAgency(index) {
       currentEditIndex = index;
-      const agency = agenciesList[index];
+      const agency = agenciasList[index];
       const editName = document.getElementById('editName');
       const editEmail = document.getElementById('editEmail');
       const editAddress = document.getElementById('editAddress');
@@ -288,13 +288,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const status = document.getElementById('editStatus').value.trim() || 'Activo';
         const docs = document.getElementById('editDocs').value.trim() || 'No';
         const logoInput = document.getElementById('editLogo');
-        let logo = agenciesList[currentEditIndex].logo;
+        let logo = agenciasList[currentEditIndex].logo;
         if (logoInput && logoInput.files && logoInput.files[0]) {
           logo = URL.createObjectURL(logoInput.files[0]);
         }
   
-        agenciesList[currentEditIndex] = {
-          ...agenciesList[currentEditIndex],
+        agenciasList[currentEditIndex] = {
+          ...agenciasList[currentEditIndex],
           name,
           email,
           address,
@@ -303,8 +303,8 @@ document.addEventListener('DOMContentLoaded', function() {
           docs,
           logo
         };
-        saveAgencies();
-        renderAgencies();
+        saveagencias();
+        renderagencias();
         closeModal('editModal');
         currentEditIndex = -1;
       }
@@ -322,9 +322,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
     function confirmDeleteAgency() {
       if (currentDeleteIndex !== -1) {
-        agenciesList.splice(currentDeleteIndex, 1);
-        saveAgencies();
-        renderAgencies();
+        agenciasList.splice(currentDeleteIndex, 1);
+        saveagencias();
+        renderagencias();
         closeModal('deleteModal');
         currentDeleteIndex = -1;
       }
@@ -352,5 +352,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.previewLogo = previewLogo;
   
     // Cargar agencias al iniciar
-    loadAgencies();
+    loadagencias();
   });
