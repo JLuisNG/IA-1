@@ -1,1 +1,20 @@
-[]
+[
+    {
+      "id": "PAC001",
+      "nombre": "",
+      "agenciaId": "",  
+      "referralId": "", 
+      "fechaIngreso": "",
+      "estado": "activo",
+      "informacionMedica": {
+        "diagnostico": "",
+        "tratamiento": "",
+        "personalAsignado": ""
+      },
+      "contacto": {
+        "telefono": "",
+        "direccion": "",
+        "emergencia": ""
+      }
+    }
+  ]

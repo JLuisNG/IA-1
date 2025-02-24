@@ -1,0 +1,15 @@
+[
+    {
+      "id": "REF001",
+      "pacienteId": "",  
+      "agenciaId": "", 
+      "fecha": "",
+      "estado": "pendiente",
+      "trabajadorSocial": "",
+      "diagnostico": "",
+      "seguro": "",
+      "servicio": "",
+      "frecuencia": "",
+      "notas": ""
+    }
+  ]
