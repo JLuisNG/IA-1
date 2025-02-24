@@ -2,16 +2,22 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("referrals.js cargado");
   
-    // Buscar el campo de búsqueda y la lista
-    const searchField = document.querySelector('input[placeholder*="agencia"], input[placeholder*="Agencia"]') || document.getElementById('agency-search');
+    // Referencias al DOM
+    const searchField = document.querySelector('input[placeholder*="agencia"]') || document.getElementById('agency-search');
     const form = document.getElementById('addReferralForm');
+    const tbody = document.querySelector('#referralsTable tbody');
     let referrals = JSON.parse(localStorage.getItem('referrals')) || [];
   
+    // Verificar elementos
+    if (!tbody) console.error('No se encontró #referralsTable tbody');
+    if (!form) console.error('No se encontró #addReferralForm');
+    if (!searchField) console.warn('No se encontró el campo de búsqueda de agencias');
+  
+    // Configurar buscador de agencias
     if (searchField) {
       console.log("Campo de búsqueda encontrado:", searchField);
       if (!searchField.id) searchField.id = 'agency-search';
   
-      // Crear o encontrar la lista desplegable
       let agenciesList = document.getElementById('agencies-list');
       if (!agenciesList) {
         agenciesList = document.createElement('div');
@@ -21,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Lista de agencias creada");
       }
   
-      // Crear o encontrar el campo oculto
       let hiddenField = document.getElementById('selected-agency');
       if (!hiddenField) {
         hiddenField = document.createElement('input');
@@ -32,77 +37,74 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Campo oculto creado");
       }
   
-      // Cargar agencias desde localStorage
-      const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
-      console.log("Agencias cargadas:", agencies.length);
-  
-      // Evento para mostrar lista al enfocar
-      searchField.addEventListener('focus', function() {
-        showAgenciesList(agencies, searchField.value);
-      });
-  
-      // Evento para filtrar mientras escribe
-      searchField.addEventListener('input', function() {
-        showAgenciesList(agencies, searchField.value);
-      });
-  
-      // Función para mostrar la lista de agencias
-      function showAgenciesList(agencias, searchTerm) {
-        agenciesList.innerHTML = '';
-        agenciesList.style.display = 'block';
-  
-        const filtered = searchTerm.trim() ?
-          agencias.filter(a => a.nombre.toLowerCase().includes(searchTerm.toLowerCase())) :
-          agencias.slice(0, 10);
-  
-        if (filtered.length === 0) {
-          agenciesList.innerHTML = '<div class="agency-item">No se encontraron agencias</div>';
-          return;
-        }
-  
-        filtered.forEach(agency => {
-          const item = document.createElement('div');
-          item.className = 'agency-item';
-          item.textContent = agency.nombre;
-  
-          item.addEventListener('click', function() {
-            searchField.value = agency.nombre;
-            hiddenField.value = agency.id;
-            agenciesList.style.display = 'none';
-            console.log("Agencia seleccionada:", { nombre: agency.nombre, id: agency.id });
-          });
-  
-          agenciesList.appendChild(item);
-        });
+      // Cargar agencias desde JSON y localStorage
+      let agencies = JSON.parse(localStorage.getItem('agencies')) || [];
+      if (agencies.length === 0) {
+        fetch('../json/agencies.json')
+          .then(response => response.json())
+          .then(data => {
+            agencies = data;
+            localStorage.setItem('agencies', JSON.stringify(agencies));
+            console.log("Agencias cargadas desde JSON:", agencies.length);
+            populateAgenciesDropdown();
+            showAgenciesList(agencies, '');
+          })
+          .catch(error => console.error('Error al cargar agencies.json:', error));
+      } else {
+        console.log("Agencias cargadas desde localStorage:", agencies.length);
+        populateAgenciesDropdown();
+        showAgenciesList(agencies, '');
       }
   
-      // Ocultar la lista cuando se hace clic fuera
-      document.addEventListener('click', function(event) {
+      searchField.addEventListener('focus', () => showAgenciesList(agencies, searchField.value));
+      searchField.addEventListener('input', () => showAgenciesList(agencies, searchField.value));
+      document.addEventListener('click', (event) => {
         if (!searchField.contains(event.target) && !agenciesList.contains(event.target)) {
           agenciesList.style.display = 'none';
         }
       });
-    } else {
-      console.warn("No se encontró el campo de búsqueda de agencias");
     }
   
-    // Cargar referidos
-    loadReferrals();
+    function showAgenciesList(agencias, searchTerm) {
+      if (!agenciesList) return;
+      agenciesList.innerHTML = '';
+      agenciesList.style.display = 'block';
   
-    // Manejar el envío del formulario
-    if (form) {
-      console.log("Formulario encontrado:", form);
-      form.addEventListener('submit', addReferral);
-    } else {
-      console.error("No se encontró el formulario #addReferralForm");
+      const filtered = searchTerm.trim() ?
+        agencias.filter(a => a.nombre.toLowerCase().includes(searchTerm.toLowerCase())) :
+        agencias.slice(0, 10);
+  
+      if (filtered.length === 0) {
+        agenciesList.innerHTML = '<div class="agency-item">No se encontraron agencias</div>';
+        return;
+      }
+  
+      filtered.forEach(agency => {
+        const item = document.createElement('div');
+        item.className = 'agency-item';
+        item.textContent = agency.nombre;
+        item.addEventListener('click', () => {
+          searchField.value = agency.nombre;
+          hiddenField.value = agency.id;
+          agenciesList.style.display = 'none';
+          console.log("Agencia seleccionada:", { nombre: agency.nombre, id: agency.id });
+        });
+        agenciesList.appendChild(item);
+      });
+    }
+  
+    function populateAgenciesDropdown() {
+      const select = document.getElementById('referralAgency');
+      if (!select) return console.error('No se encontró #referralAgency');
+      select.innerHTML = '<option value="">Selecciona una agencia</option>';
+      const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
+      agencies.forEach(agency => {
+        select.innerHTML += `<option value="${agency.id}">${agency.nombre}</option>`;
+      });
     }
   
     function loadReferrals() {
-      const tbody = document.querySelector('#referralsTable tbody');
-      if (!tbody) {
-        console.error('No se encontró #referralsTable tbody');
-        return;
-      }
+      if (!tbody) return;
       tbody.innerHTML = '';
       const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
       referrals.forEach(ref => {
@@ -118,11 +120,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   
     function addReferral(event) {
-      event.preventDefault(); // Evitar recarga de la página
+      event.preventDefault();
       console.log("Evento submit disparado");
   
       const referralName = document.getElementById('referralName');
       const referralAgencyId = document.getElementById('selected-agency');
+      const modal = document.getElementById('addReferralModal');
   
       if (!referralName || !referralAgencyId) {
         console.error("Elementos no encontrados:", { referralName: !!referralName, referralAgencyId: !!referralAgencyId });
@@ -163,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
         agencyId: agencyIdValue,
         date: new Date().toLocaleDateString(),
         status: 'new',
-        agency: agencies.find(a => a.id === agencyIdValue)?.nombre || ''
+        agency: (JSON.parse(localStorage.getItem('agencies')) || []).find(a => a.id === agencyIdValue)?.nombre || ''
       };
       patients.push(newPatient);
       localStorage.setItem('patients', JSON.stringify(patients));
@@ -181,25 +184,26 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   
       // Cerrar modal y limpiar formulario
-      const modalElement = document.getElementById('addReferralModal');
-      if (modalElement) {
-        const modal = bootstrap.Modal.getInstance(modalElement);
-        if (modal) {
-          modal.hide();
-          console.log("Modal cerrado");
-        } else {
-          console.error("No se pudo instanciar el modal Bootstrap");
-        }
+      if (modal) {
+        const bootstrapModal = bootstrap.Modal.getInstance(modal) || new bootstrap.Modal(modal);
+        bootstrapModal.hide();
+        console.log("Modal cerrado");
       } else {
         console.error("No se encontró #addReferralModal");
       }
   
-      form.reset();
-      referralName.value = '';
-      referralAgencyId.value = '';
-      if (searchField) searchField.value = '';
-      console.log("Formulario limpiado");
+      if (form) {
+        form.reset();
+        referralName.value = '';
+        referralAgencyId.value = '';
+        if (searchField) searchField.value = '';
+        console.log("Formulario limpiado");
+      } else {
+        console.error("Formulario no encontrado para limpiar");
+      }
   
       loadReferrals();
     }
+  
+    if (form) form.addEventListener('submit', addReferral);
   });

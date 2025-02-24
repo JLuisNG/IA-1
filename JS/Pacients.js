@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const agencySearch = document.getElementById('agency-search');
     const agenciesList = document.getElementById('agencies-list');
     const selectedAgencyInput = document.getElementById('selected-agency');
-    const tableBody = document.querySelector('.patients-table tbody') || document.getElementById('referrals-table-body');
+    const tableBody = document.querySelector('.patients-table tbody');
     let patients = JSON.parse(localStorage.getItem('patients')) || [];
   
-    console.log("Elementos disponibles en Pacients.js:", {
+    console.log("Elementos disponibles en patients.js:", {
       patientForm: !!patientForm,
       patientName: !!patientName,
       agencySearch: !!agencySearch,
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         console.log("Referido encontrado:", referral);
   
-        const agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+        const agencies = JSON.parse(localStorage.getItem('agencies') || []);
         const agency = agencies.find(a => a.id === referral.agencyId);
         if (!agency) {
           console.error('Agencia no encontrada:', referral.agencyId);
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             localStorage.setItem('agencies', JSON.stringify(data));
           }
-          console.log("Agencias cargadas en Pacients.js:", data);
+          console.log("Agencias cargadas en patients.js:", data);
         })
         .catch(error => console.error('Error cargando agencias:', error));
     }
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
   
-      const agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+      const agencies = JSON.parse(localStorage.getItem('agencies') || []);
       const filteredAgencies = agencies.filter(agency =>
         agency.nombre.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -139,12 +139,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
     function savePatient(patientData) {
       try {
-        let patients = JSON.parse(localStorage.getItem('patients') || '[]');
+        let patients = JSON.parse(localStorage.getItem('patients') || []);
         const patientId = `PAT${Date.now()}`;
         const newPatient = {
           id: patientId,
           date: new Date().toLocaleDateString(),
-          name: patientData.name,
+          name: patientData.name || `Paciente ${new Date().toLocaleDateString()}`,
           status: 'new',
           agenciaId: patientData.agencyId,
           referralId: patientData.referralId || "",
@@ -158,10 +158,10 @@ document.addEventListener('DOMContentLoaded', function() {
           },
           decline: '',
           evalDate: new Date().toLocaleDateString(),
-          address: patientData.address,
-          zipCode: patientData.zipCode,
-          notes: patientData.notes,
-          agency: patientData.agencyName
+          address: patientData.address || "",
+          zipCode: patientData.zipCode || "",
+          notes: patientData.notes || "",
+          agency: patientData.agencyName || ""
         };
         patients.push(newPatient);
         localStorage.setItem('patients', JSON.stringify(patients));
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
     function updateReferralStatus(referralId, patientId) {
       try {
-        const referrals = JSON.parse(localStorage.getItem('referrals') || '[]');
+        const referrals = JSON.parse(localStorage.getItem('referrals') || []);
         const referralIndex = referrals.findIndex(r => r.id === referralId);
         if (referralIndex !== -1) {
           referrals[referralIndex].pacienteId = patientId;
@@ -195,9 +195,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
     function updateAgencyPatientCount(agencyId) {
       try {
-        const agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+        const agencies = JSON.parse(localStorage.getItem('agencies') || []);
         const agencyIndex = agencies.findIndex(a => a.id === agencyId);
-        if (agencyIndex !== -1) {
+        if (agentIndex !== -1) {
           agencies[agencyIndex].pacientesActivos = (agencies[agencyIndex].pacientesActivos || 0) + 1;
           localStorage.setItem('agencies', JSON.stringify(agencies));
           console.log("Contador de agencia actualizado:", agencies[agencyIndex]);
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
           return;
         }
   
-        const agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+        const agencies = JSON.parse(localStorage.getItem('agencies') || []);
         const selectedAgency = agencies.find(a => a.id === selectedAgencyInput.value);
         if (!selectedAgency) {
           alert('Agencia no encontrada');
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
           if (tableBody) {
             loadPatientsData();
           } else {
-            window.location.href = 'patients.html'; // Ajusta el nombre del archivo si es diferente
+            window.location.href = 'patients.html';
           }
         } else {
           alert('Error al registrar el paciente');
@@ -273,9 +273,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   
     function loadPatientsData() {
-      if (!tableBody) return;
-      const patients = JSON.parse(localStorage.getItem('patients') || '[]');
-      console.log("Cargando pacientes en tabla:", patients);
+      if (!tableBody) return console.error('No se encontró .patients-table tbody');
+      const patients = JSON.parse(localStorage.getItem('patients') || []);
+      console.log("Cargando pacientes en tabla:", patients.length);
       tableBody.innerHTML = '';
       patients.forEach(patient => addPatientToTable(patient));
     }
@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
       row.classList.add(`row-${patient.status || 'new'}`);
       const cells = [
         createCell(patient.date, 'date-cell'),
-        createCell(patient.name),
+        createCell(patient.name || `${patient.nombre} ${patient.apellido}`),
         createTherapistCell('PT', patient.therapists?.PT),
         createTherapistCell('PTA', patient.therapists?.PTA),
         createTherapistCell('OT', patient.therapists?.OT),
