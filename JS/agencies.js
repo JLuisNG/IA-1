@@ -333,24 +333,3 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAgencies();
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const agenciesContainer = document.getElementById('agenciesGrid'); // Ajusta según tu HTML
-
-    function renderAgencies() {
-        const agencies = DataManager.getAgencies();
-        
-        agenciesContainer.innerHTML = ''; // Limpiar contenedor
-        
-        agencies.forEach(agency => {
-            const agencyCard = document.createElement('div');
-            agencyCard.classList.add('agency-card');
-            agencyCard.innerHTML = `
-                <h3>${agency.nombre}</h3>
-                <p>Referidos: ${agency.referidos}</p>
-            `;
-            agenciesContainer.appendChild(agencyCard);
-        });
-    }
-
-    renderAgencies();
-});
