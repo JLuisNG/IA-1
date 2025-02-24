@@ -1,261 +1,205 @@
-// Pacients.js - Manejo de pacientes
-
-document.addEventListener('DOMContentLoaded', async () => {
-    // Referencias a elementos del DOM
-    const patientForm = document.getElementById('patient-form');
-    const patientName = document.getElementById('patient-name');
-    const agencySearch = document.getElementById('agency-search');
-    const agenciesList = document.getElementById('agencies-list');
-    const selectedAgencyInput = document.getElementById('selected-agency');
-    
-    console.log("Elementos disponibles en Pacients.js:", {
-        patientForm: !!patientForm,
-        patientName: !!patientName,
-        agencySearch: !!agencySearch,
-        agenciesList: !!agenciesList,
-        selectedAgencyInput: !!selectedAgencyInput
-    });
-    
-    // Cargar agencias
-    const agencias = await DataManager.getAgencias();
-    
-    // Comprobar si hay un referido en la URL
-    const params = new URLSearchParams(window.location.search);
-    const referralId = params.get('referralId');
-    
-    console.log("Referido ID recibido:", referralId);
-    
-    // Cargar datos del referido si existe
-    if (referralId) {
-        await loadReferralData(referralId);
-    }
-    
-    // Función para cargar datos del referido
-    async function loadReferralData(refId) {
-        try {
-            // Obtener referido
-            const referrals = await DataManager.getReferrals();
-            const referral = referrals.find(r => r.id === refId);
-            
-            if (!referral) {
-                console.error("Referido no encontrado:", refId);
-                return;
-            }
-            
-            console.log("Referido encontrado:", referral);
-            
-            // Obtener datos de la agencia
-            const agency = agencias.find(a => a.id === referral.agenciaId);
-            
-            if (!agency) {
-                console.error("Agencia no encontrada:", referral.agenciaId);
-                return;
-            }
-            
-            console.log("Agencia encontrada:", agency);
-            
-            // Llenar formulario
-            if (selectedAgencyInput) selectedAgencyInput.value = referral.agenciaId;
-            if (agencySearch) agencySearch.value = agency.nombre;
-            
-            // Asignar un nombre de paciente sugerido
-            if (patientName) {
-                patientName.value = `Paciente - ${agency.nombre} - ${new Date().toLocaleDateString()}`;
-            }
-            
-            // Rellenar dirección, código postal y notas
-            const addressField = document.getElementById('patient-address');
-            if (addressField) addressField.value = referral.direccion || '';
-            
-            const zipField = document.getElementById('patient-zip');
-            if (zipField) zipField.value = referral.zipCode || '';
-            
-            const notesField = document.getElementById('notes');
-            if (notesField) notesField.value = referral.notas || '';
-            
-            // Marcar servicios
-            if (referral.servicios && Array.isArray(referral.servicios)) {
-                referral.servicios.forEach(service => {
-                    const checkbox = document.querySelector(`input[name="services"][value="${service}"]`);
-                    if (checkbox) {
-                        checkbox.checked = true;
-                    }
-                });
-            }
-            
-            // Mostrar notificación
-            showReferralNotification(referral, agency);
-        } catch (error) {
-            console.error("Error cargando datos del referido:", error);
-        }
-    }
-    
-    // Función para mostrar notificación de referido
-    function showReferralNotification(referral, agency) {
-        // Crear notificación
-        const notification = document.createElement('div');
-        notification.className = 'referral-notification';
-        notification.style.backgroundColor = '#e8f5e9';
-        notification.style.padding = '10px';
-        notification.style.margin = '10px 0';
-        notification.style.borderRadius = '4px';
-        notification.style.border = '1px solid #a5d6a7';
-        
-        notification.innerHTML = `
-            <i class="fas fa-info-circle"></i>
-            <p>Estás creando un paciente a partir del referido <strong>${referral.id}</strong> de la agencia <strong>${agency.nombre}</strong>.</p>
-            <button class="close-notification" style="background: none; border: none; cursor: pointer; float: right;">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        
-        // Insertar al inicio del formulario
-        if (patientForm) {
-            const formContainer = patientForm.closest('.container') || patientForm.parentElement;
-            formContainer.insertBefore(notification, formContainer.firstChild);
-            
-            // Evento para cerrar
-            notification.querySelector('.close-notification').addEventListener('click', () => {
-                notification.remove();
-            });
-        }
-    }
-    
-    // Función para mostrar agencias en lista
-    function displayAgencies(searchTerm = '') {
-        if (!agenciesList) return;
-        
+// referrals.js
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("referrals.js cargado");
+  
+    // Buscar el campo de búsqueda y la lista
+    const searchField = document.querySelector('input[placeholder*="agencia"], input[placeholder*="Agencia"]') || document.getElementById('agency-search');
+    const form = document.getElementById('addReferralForm');
+    let referrals = JSON.parse(localStorage.getItem('referrals')) || [];
+  
+    if (searchField) {
+      console.log("Campo de búsqueda encontrado:", searchField);
+      if (!searchField.id) searchField.id = 'agency-search';
+  
+      // Crear o encontrar la lista desplegable
+      let agenciesList = document.getElementById('agencies-list');
+      if (!agenciesList) {
+        agenciesList = document.createElement('div');
+        agenciesList.id = 'agencies-list';
+        agenciesList.className = 'agencies-list';
+        searchField.parentNode.insertBefore(agenciesList, searchField.nextSibling);
+        console.log("Lista de agencias creada");
+      }
+  
+      // Crear o encontrar el campo oculto
+      let hiddenField = document.getElementById('selected-agency');
+      if (!hiddenField) {
+        hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.id = 'selected-agency';
+        hiddenField.name = 'selected-agency';
+        searchField.parentNode.appendChild(hiddenField);
+        console.log("Campo oculto creado");
+      }
+  
+      // Cargar agencias desde localStorage
+      const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
+      console.log("Agencias cargadas:", agencies.length);
+  
+      // Evento para mostrar lista al enfocar
+      searchField.addEventListener('focus', function() {
+        showAgenciesList(agencies, searchField.value);
+      });
+  
+      // Evento para filtrar mientras escribe
+      searchField.addEventListener('input', function() {
+        showAgenciesList(agencies, searchField.value);
+      });
+  
+      // Función para mostrar la lista de agencias
+      function showAgenciesList(agencias, searchTerm) {
         agenciesList.innerHTML = '';
         agenciesList.style.display = 'block';
-        
-        if (!searchTerm.trim()) {
-            agenciesList.innerHTML = '<p class="no-results">Escribe para buscar agencias...</p>';
-            return;
+  
+        const filtered = searchTerm.trim() ?
+          agencias.filter(a => a.nombre.toLowerCase().includes(searchTerm.toLowerCase())) :
+          agencias.slice(0, 10);
+  
+        if (filtered.length === 0) {
+          agenciesList.innerHTML = '<div class="agency-item">No se encontraron agencias</div>';
+          return;
         }
-        
-        const filteredAgencies = agencias.filter(agency =>
-            agency.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        
-        if (filteredAgencies.length === 0) {
-            agenciesList.innerHTML = '<p class="no-results">No se encontraron agencias</p>';
-            return;
+  
+        filtered.forEach(agency => {
+          const item = document.createElement('div');
+          item.className = 'agency-item';
+          item.textContent = agency.nombre;
+  
+          item.addEventListener('click', function() {
+            searchField.value = agency.nombre;
+            hiddenField.value = agency.id;
+            agenciesList.style.display = 'none';
+            console.log("Agencia seleccionada:", { nombre: agency.nombre, id: agency.id });
+          });
+  
+          agenciesList.appendChild(item);
+        });
+      }
+  
+      // Ocultar la lista cuando se hace clic fuera
+      document.addEventListener('click', function(event) {
+        if (!searchField.contains(event.target) && !agenciesList.contains(event.target)) {
+          agenciesList.style.display = 'none';
         }
-        
-        filteredAgencies.forEach(agency => {
-            const agencyElement = document.createElement('div');
-            agencyElement.className = 'agency-item';
-            agencyElement.textContent = `${agency.nombre} (${agency.referidos} referidos)`;
-            agencyElement.dataset.id = agency.id;
-            agencyElement.dataset.nombre = agency.nombre;
-            
-            agencyElement.addEventListener('click', () => {
-                if (selectedAgencyInput && agencySearch) {
-                    selectedAgencyInput.value = agency.id;
-                    agencySearch.value = agency.nombre;
-                    agenciesList.style.display = 'none';
-                }
-            });
-            
-            agenciesList.appendChild(agencyElement);
-        });
+      });
+    } else {
+      console.warn("No se encontró el campo de búsqueda de agencias");
     }
-    
-    // Función para guardar paciente
-    async function savePatient(patientData) {
-        try {
-            // Crear paciente
-            const newPatient = await DataManager.createPatient(patientData);
-            
-            console.log("Paciente guardado:", newPatient);
-            return true;
-        } catch (error) {
-            console.error("Error guardando paciente:", error);
-            return false;
+  
+    // Cargar referidos
+    loadReferrals();
+  
+    // Manejar el envío del formulario
+    if (form) {
+      console.log("Formulario encontrado:", form);
+      form.addEventListener('submit', addReferral);
+    } else {
+      console.error("No se encontró el formulario #addReferralForm");
+    }
+  
+    function loadReferrals() {
+      const tbody = document.querySelector('#referralsTable tbody');
+      if (!tbody) {
+        console.error('No se encontró #referralsTable tbody');
+        return;
+      }
+      tbody.innerHTML = '';
+      const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
+      referrals.forEach(ref => {
+        const agency = agencies.find(a => a.id === ref.agencyId);
+        tbody.innerHTML += `
+          <tr>
+            <td>${ref.name}</td>
+            <td>${agency ? agency.nombre : ref.agencyId}</td>
+            <td><button class="btn btn-sm btn-primary">View</button></td>
+          </tr>`;
+      });
+      console.log("Referidos cargados:", referrals.length);
+    }
+  
+    function addReferral(event) {
+      event.preventDefault(); // Evitar recarga de la página
+      console.log("Evento submit disparado");
+  
+      const referralName = document.getElementById('referralName');
+      const referralAgencyId = document.getElementById('selected-agency');
+  
+      if (!referralName || !referralAgencyId) {
+        console.error("Elementos no encontrados:", { referralName: !!referralName, referralAgencyId: !!referralAgencyId });
+        alert('Error: No se encontraron los campos necesarios');
+        return;
+      }
+  
+      const nameValue = referralName.value.trim();
+      const agencyIdValue = referralAgencyId.value.trim();
+  
+      if (!nameValue || !agencyIdValue) {
+        console.warn("Campos incompletos:", { name: nameValue, agencyId: agencyIdValue });
+        alert('Por favor, completa todos los campos');
+        return;
+      }
+  
+      console.log("Datos capturados:", { name: nameValue, agencyId: agencyIdValue });
+  
+      // Agregar referido
+      const newReferral = {
+        id: `REF${Date.now()}`,
+        name: nameValue,
+        agencyId: agencyIdValue
+      };
+      referrals.push(newReferral);
+      localStorage.setItem('referrals', JSON.stringify(referrals));
+      console.log("Referido guardado en localStorage:", newReferral);
+  
+      // Agregar paciente
+      let patients = JSON.parse(localStorage.getItem('patients')) || [];
+      const [nombre, apellido] = nameValue.split(' ');
+      const newPatient = {
+        id: `PAT${Date.now()}`,
+        name: nameValue,
+        nombre,
+        apellido: apellido || '',
+        edad: null,
+        agencyId: agencyIdValue,
+        date: new Date().toLocaleDateString(),
+        status: 'new',
+        agency: agencies.find(a => a.id === agencyIdValue)?.nombre || ''
+      };
+      patients.push(newPatient);
+      localStorage.setItem('patients', JSON.stringify(patients));
+      console.log("Paciente guardado en localStorage:", newPatient);
+  
+      // Actualizar agencia
+      let storedAgencies = JSON.parse(localStorage.getItem('agencies')) || [];
+      const agency = storedAgencies.find(a => a.id === agencyIdValue);
+      if (agency) {
+        agency.pacientesActivos = (agency.pacientesActivos || 0) + 1;
+        localStorage.setItem('agencies', JSON.stringify(storedAgencies));
+        console.log("Agencia actualizada:", agency);
+      } else {
+        console.error("Agencia no encontrada:", agencyIdValue);
+      }
+  
+      // Cerrar modal y limpiar formulario
+      const modalElement = document.getElementById('addReferralModal');
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) {
+          modal.hide();
+          console.log("Modal cerrado");
+        } else {
+          console.error("No se pudo instanciar el modal Bootstrap");
         }
+      } else {
+        console.error("No se encontró #addReferralModal");
+      }
+  
+      form.reset();
+      referralName.value = '';
+      referralAgencyId.value = '';
+      if (searchField) searchField.value = '';
+      console.log("Formulario limpiado");
+  
+      loadReferrals();
     }
-    
-    // Event Listeners
-    if (patientForm) {
-        patientForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            console.log("Formulario enviado");
-            
-            // Validar servicios seleccionados
-            const selectedServices = Array.from(document.querySelectorAll('input[name="services"]:checked'))
-                .map(checkbox => checkbox.value);
-            
-            if (selectedServices.length === 0) {
-                alert('Por favor, selecciona al menos un servicio');
-                return;
-            }
-            
-            // Validar agencia
-            if (!selectedAgencyInput || !selectedAgencyInput.value) {
-                alert('Por favor, selecciona una agencia');
-                return;
-            }
-            
-            // Obtener datos de la agencia
-            const selectedAgency = agencias.find(a => a.id === selectedAgencyInput.value);
-            
-            if (!selectedAgency) {
-                alert('Agencia no encontrada');
-                return;
-            }
-            
-            // Recopilar datos
-            const patientData = {
-                name: patientName ? patientName.value : `Paciente - ${new Date().toLocaleDateString()}`,
-                agencyId: selectedAgencyInput.value,
-                agencyName: selectedAgency.nombre,
-                referralId: referralId, // ID del referido de la URL
-                services: selectedServices,
-                address: document.getElementById('patient-address')?.value || "",
-                zipCode: document.getElementById('patient-zip')?.value || "",
-                notes: document.getElementById('notes')?.value || ""
-            };
-            
-            console.log("Datos del paciente a guardar:", patientData);
-            
-            // Guardar paciente
-            if (await savePatient(patientData)) {
-                alert('Paciente registrado exitosamente');
-                patientForm.reset();
-                
-                // Limpiar campos
-                if (selectedAgencyInput) selectedAgencyInput.value = '';
-                if (agencySearch) agencySearch.value = '';
-                if (agenciesList) agenciesList.style.display = 'none';
-                
-                // Redirigir a la lista de pacientes
-                window.location.href = 'Referrals.html';
-            } else {
-                alert('Error al registrar el paciente');
-            }
-        });
-    }
-    
-    // Event listeners para buscador de agencias
-    if (agencySearch) {
-        agencySearch.addEventListener('focus', () => {
-            displayAgencies(agencySearch.value);
-        });
-        
-        agencySearch.addEventListener('input', (e) => {
-            displayAgencies(e.target.value);
-        });
-        
-        agencySearch.addEventListener('blur', () => {
-            setTimeout(() => {
-                if (agenciesList && !agenciesList.contains(document.activeElement)) {
-                    agenciesList.style.display = 'none';
-                }
-            }, 200);
-        });
-    }
-    
-    // Inicializar
-    if (agenciesList) agenciesList.style.display = 'none';
-});
+  });
