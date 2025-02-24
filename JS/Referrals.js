@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const searchField = document.querySelector('input[placeholder*="agencia"]') || document.getElementById('agency-search');
   const form = document.getElementById('addReferralForm');
   const tbody = document.querySelector('#referralsTable tbody');
-  let referrals = JSON.parse(localStorage.getItem('referrals')) || [];
+  let referrals = JSON.parse(localStorage.getItem('referrals') || '[]');
 
   // Verificar elementos
   if (!tbody) console.error('No se encontró #referralsTable tbody');
@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Cargar agencias desde localStorage o JSON
-    let agencies = JSON.parse(localStorage.getItem('agencies')) || [];
+    let agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
     if (agencies.length === 0) {
-      fetch('agencies.json') // Nueva ruta en la raíz
+      fetch('agencies.json') // Usa la ruta en la raíz
         .then(response => {
           if (!response.ok) throw new Error(`Error al cargar agencies.json: ${response.status} ${response.statusText}`);
           return response.json();
@@ -51,7 +51,13 @@ document.addEventListener('DOMContentLoaded', function() {
           console.log("Agencias cargadas desde JSON:", agencies.length);
           showAgenciesList(agencies, '');
         })
-        .catch(error => console.error('Error al cargar agencies.json:', error));
+        .catch(error => {
+          console.error('Error al cargar agencies.json:', error);
+          // Usar datos de localStorage o array vacío como fallback
+          agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+          console.log("Agencias cargadas desde localStorage o fallback:", agencies.length);
+          showAgenciesList(agencies, '');
+        });
     } else {
       console.log("Agencias cargadas desde localStorage:", agencies.length);
       showAgenciesList(agencies, '');
@@ -97,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function loadReferrals() {
     if (!tbody) return;
     tbody.innerHTML = '';
-    const agencies = JSON.parse(localStorage.getItem('agencies')) || [];
+    const agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
     referrals.forEach(ref => {
       const agency = agencies.find(a => a.id === ref.agencyId);
       tbody.innerHTML += `
@@ -146,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Referido guardado en localStorage:", newReferral);
 
     // Agregar paciente
-    let patients = JSON.parse(localStorage.getItem('patients')) || [];
+    let patients = JSON.parse(localStorage.getItem('patients') || '[]');
     const [nombre, apellido] = nameValue.split(' ');
     const newPatient = {
       id: `PAT${Date.now()}`,
@@ -164,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Paciente guardado en localStorage:", newPatient);
 
     // Actualizar agencia
-    let storedAgencies = JSON.parse(localStorage.getItem('agencies')) || [];
+    let storedAgencies = JSON.parse(localStorage.getItem('agencies') || '[]');
     const agency = storedAgencies.find(a => a.id === agencyIdValue);
     if (agency) {
       agency.pacientesActivos = (agency.pacientesActivos || 0) + 1;

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const agenciesList = document.getElementById('agencies-list');
   const selectedAgencyInput = document.getElementById('selected-agency');
   const tableBody = document.querySelector('.patients-table tbody');
-  let patients = JSON.parse(localStorage.getItem('patients')) || [];
+  let patients = JSON.parse(localStorage.getItem('patients') || '[]');
 
   console.log("Elementos disponibles en patients.js:", {
     patientForm: !!patientForm,
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       console.log("Referido encontrado:", referral);
 
-      const agencies = JSON.parse(localStorage.getItem('agencies') || []);
+      const agencies = JSON.parse(localStorage.getItem('agencies') || '[]');
       const agency = agencies.find(a => a.id === referral.agencyId);
       if (!agency) {
         console.error('Agencia no encontrada:', referral.agencyId);
@@ -79,14 +79,14 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function loadAgencies() {
-    fetch('agencies.json') // Nueva ruta en la raíz
+    fetch('agencies.json') // Usa la ruta en la raíz
       .then(response => {
         if (!response.ok) throw new Error(`Error al cargar agencies.json: ${response.status} ${response.statusText}`);
         return response.json();
       })
       .then(data => {
-        let storedAgencies = JSON.parse(localStorage.getItem('agencies'));
-        if (!storedAgencies) {
+        let storedAgencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+        if (storedAgencies.length === 0) {
           localStorage.setItem('agencies', JSON.stringify(data));
         } else {
           data.forEach(agency => {
@@ -100,7 +100,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         console.log("Agencias cargadas en patients.js:", data);
       })
-      .catch(error => console.error('Error cargando agencias:', error));
+      .catch(error => {
+        console.error('Error cargando agencias:', error);
+        // Usar datos de localStorage o array vacío como fallback
+        const savedAgencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+        if (savedAgencies.length > 0) {
+          console.log("Agencias cargadas desde localStorage:", savedAgencies.length);
+        } else {
+          console.warn("No se pudieron cargar agencias, usando lista vacía como fallback");
+        }
+      });
   }
 
   function displayAgencies(searchTerm = '') {

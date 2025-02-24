@@ -1,7 +1,7 @@
 // agencies.js
 document.addEventListener('DOMContentLoaded', function() {
     console.log("agencies.js cargado");
-    let agenciesList = [];
+    let agenciesList = []; // Inicializa como un array vacío por defecto
     let totalPatientsCounter = 6467; // Mantén este valor si es necesario para tu diseño
     let currentEditIndex = -1;
     let currentDeleteIndex = -1;
@@ -56,47 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
           return response.json();
         })
         .then(data => {
-          const savedAgencies = JSON.parse(localStorage.getItem('agencies') || '[]');
-          if (savedAgencies.length === 0) {
-            agenciesList = data.map(agency => ({
-              id: agency.id,
-              name: agency.nombre,
-              patients: agency.pacientesActivos || 0,
-              referidos: agency.referidos || 0,
-              address: agency.contacto.direccion || 'Los Angeles, California',
-              phone: agency.contacto.telefono || generateRandomPhone(),
-              email: agency.contacto.email || generateEmail(agency.nombre),
-              status: 'Activo',
-              docs: 'No',
-              logo: '/api/placeholder/64/64'
-            }));
-            localStorage.setItem('agencies', JSON.stringify(agenciesList));
-            console.log("Agencias cargadas desde JSON:", agenciesList.length);
-          } else {
-            agenciesList = savedAgencies.map((saved, index) => {
-              const jsonAgency = data.find(a => a.id === saved.id) || {};
-              return {
-                id: saved.id || jsonAgency.id,
-                name: saved.name || jsonAgency.nombre,
-                patients: saved.pacientesActivos || jsonAgency.pacientesActivos || 0,
-                referidos: saved.referidos || jsonAgency.referidos || 0,
-                address: saved.address || jsonAgency.contacto.direccion || 'Los Angeles, California',
-                phone: saved.phone || jsonAgency.contacto.telefono || generateRandomPhone(),
-                email: saved.email || jsonAgency.contacto.email || generateEmail(saved.name || jsonAgency.nombre),
-                status: saved.status || 'Activo',
-                docs: saved.docs || 'No',
-                logo: saved.logo || '/api/placeholder/64/64'
-              };
-            });
-            localStorage.setItem('agencies', JSON.stringify(agenciesList));
-            console.log("Agencias cargadas desde localStorage:", agenciesList.length);
-          }
-          renderAgencies();
-          updateTotalPatientsCounter();
-        })
-        .catch(error => {
-          console.error('Error loading agencies:', error);
-          // Usar datos predeterminados como fallback si JSON falla
           agenciesList = data.map(agency => ({
             id: agency.id,
             name: agency.nombre,
@@ -107,11 +66,26 @@ document.addEventListener('DOMContentLoaded', function() {
             email: agency.contacto.email || generateEmail(agency.nombre),
             status: 'Activo',
             docs: 'No',
-            logo: '/api/placeholder/64/64'
+            logo: '/api/placeholder/64/64' // Asegúrate de que esta URL sea válida o usa un placeholder real
           }));
+          localStorage.setItem('agencies', JSON.stringify(agenciesList));
+          console.log("Agencias cargadas desde JSON:", agenciesList.length);
           renderAgencies();
           updateTotalPatientsCounter();
-          console.warn("Usando agencias desde JSON por error en localStorage:", agenciesList.length);
+        })
+        .catch(error => {
+          console.error('Error loading agencies:', error);
+          // Usar datos de localStorage o un array vacío como fallback
+          const savedAgencies = JSON.parse(localStorage.getItem('agencies') || '[]');
+          if (savedAgencies.length > 0) {
+            agenciesList = savedAgencies;
+            console.log("Agencias cargadas desde localStorage:", agenciesList.length);
+          } else {
+            agenciesList = []; // Fallback si no hay datos
+            console.warn("No se pudieron cargar agencias, usando lista vacía como fallback");
+          }
+          renderAgencies();
+          updateTotalPatientsCounter();
         });
     }
   
