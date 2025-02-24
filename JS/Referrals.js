@@ -5,20 +5,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const agenciesList = document.getElementById('agencies-list');
     const selectedAgencyInput = document.getElementById('selected-agency');
 
-    // Lista de agencias
-    const agencies = [
-        { id: '24-7', name: '24/7' },
-        { id: '247hhs', name: '247hhs' },
-        { id: 'able-hands', name: 'Able Hands' }
-    ];
+    let agenciesData = []; // Variable para almacenar las agencias cargadas
 
-    // Función para mostrar las agencias
+    // Función para cargar las agencias desde agencias.json
+    function loadAgencies() {
+        fetch('./JSON/agencias.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                agenciesData = data; // Guardar las agencias en una variable global
+                if (!localStorage.getItem('agencias')) {
+                    localStorage.setItem('agencias', JSON.stringify(data));
+                }
+            })
+            .catch(error => {
+                console.error('Error cargando agencias:', error);
+                agenciesList.innerHTML = '<p class="no-results">Error al cargar agencias: ' + error.message + '</p>';
+                agenciesList.style.display = 'block'; // Mostrar el mensaje de error
+            });
+    }
+
+    // Función para mostrar las agencias (filtradas por búsqueda)
     function displayAgencies(searchTerm = '') {
-        const filteredAgencies = agencies.filter(agency => 
-            agency.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
         agenciesList.innerHTML = '';
+        agenciesList.style.display = 'block'; // Mostrar la lista solo cuando hay búsqueda
+
+        if (!searchTerm.trim()) {
+            agenciesList.innerHTML = '<p class="no-results">Escribe para buscar agencias...</p>';
+            return;
+        }
+
+        const filteredAgencies = agenciesData.filter(agency =>
+            agency.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
         if (filteredAgencies.length === 0) {
             agenciesList.innerHTML = '<p class="no-results">No se encontraron agencias</p>';
@@ -28,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
         filteredAgencies.forEach(agency => {
             const agencyElement = document.createElement('div');
             agencyElement.className = 'agency-item';
-            agencyElement.textContent = agency.name;
-            agencyElement.dataset.id = agency.id;
+            agencyElement.textContent = `${agency.nombre} (${agency.referidos} referidos)`; // Mostrar contador
+            agencyElement.dataset.id = agency.nombre; // Usamos nombre como ID por simplicidad
 
             // Agregar evento de click
             agencyElement.addEventListener('click', () => selectAgency(agency));
@@ -40,22 +63,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para seleccionar una agencia
     function selectAgency(agency) {
-        selectedAgencyInput.value = agency.id;
-        
-        // Actualizar UI para mostrar la selección
-        document.querySelectorAll('.agency-item').forEach(item => {
-            item.classList.remove('selected');
-            if (item.dataset.id === agency.id) {
-                item.classList.add('selected');
-            }
-        });
+        selectedAgencyInput.value = agency.nombre; // Asegurar que el input oculto se actualice
+        agencySearch.value = agency.nombre; // Mostrar la agencia seleccionada en el campo de búsqueda
+        agenciesList.style.display = 'none'; // Ocultar la lista después de seleccionar
+        agencySearch.focus(); // Mantener el foco en el campo para seguir editando si es necesario
     }
 
-    // Función para guardar paciente
+    // Función para guardar paciente y actualizar datos
     function savePatient(patientData) {
         try {
-            // Obtener lista actual de pacientes
-            let patients = JSON.parse(localStorage.getItem('referrals') || '[]');
+            // Obtener lista actual de pacientes desde localStorage
+            let patients = JSON.parse(localStorage.getItem('pacientes') || '[]');
             
             // Crear nuevo paciente
             const newPatient = {
@@ -70,15 +88,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 decline: '',
                 dateOfEval: new Date().toLocaleDateString(),
                 address: patientData.address,
+                zipCode: patientData.zipCode,
+                notes: patientData.notes,
                 agency: patientData.agencyName
             };
             
-            // Agregar a la lista
+            // Agregar a la lista de pacientes
             patients.push(newPatient);
-            
-            // Guardar en localStorage
-            localStorage.setItem('referrals', JSON.stringify(patients));
-            
+            localStorage.setItem('pacientes', JSON.stringify(patients));
+
+            // Actualizar el contador de la agencia en localStorage
+            let agencies = JSON.parse(localStorage.getItem('agencias'));
+            const selectedAgency = agencies.find(a => a.nombre === patientData.agencyName);
+            if (selectedAgency) {
+                selectedAgency.referidos += 1;
+                localStorage.setItem('agencias', JSON.stringify(agencies));
+            }
+
             return true;
         } catch (error) {
             console.error('Error al guardar:', error);
@@ -87,8 +113,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Event Listeners
+    agencySearch.addEventListener('focus', () => {
+        // Mostrar un mensaje inicial cuando el usuario hace clic en el campo
+        if (!agenciesData.length) {
+            loadAgencies(); // Cargar agencias si aún no están cargadas
+        } else {
+            displayAgencies(agencySearch.value); // Mostrar lista con el texto actual
+        }
+    });
+
     agencySearch.addEventListener('input', (e) => {
-        displayAgencies(e.target.value);
+        const searchTerm = e.target.value;
+        if (agenciesData.length) {
+            displayAgencies(searchTerm);
+        }
+    });
+
+    agencySearch.addEventListener('blur', () => {
+        // Ocultar la lista si el usuario hace clic fuera, pero no si está seleccionando una agencia
+        setTimeout(() => {
+            if (!agenciesList.contains(document.activeElement)) {
+                agenciesList.style.display = 'none';
+            }
+        }, 200); // Pequeño retraso para permitir clics en las agencias
     });
 
     patientForm.addEventListener('submit', (e) => {
@@ -109,13 +156,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const selectedAgency = agencies.find(a => a.id === selectedAgencyInput.value);
+        const selectedAgency = JSON.parse(localStorage.getItem('agencias')).find(
+            a => a.nombre === selectedAgencyInput.value
+        );
 
         // Recopilar datos del formulario
         const patientData = {
             name: document.getElementById('patient-name').value,
             agencyId: selectedAgencyInput.value,
-            agencyName: selectedAgency.name,
+            agencyName: selectedAgency.nombre,
             services: selectedServices,
             address: document.getElementById('patient-address').value,
             zipCode: document.getElementById('patient-zip').value,
@@ -126,12 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savePatient(patientData)) {
             alert('Paciente registrado exitosamente');
             patientForm.reset();
-            window.location.href = 'Referrals.html';
+            selectedAgencyInput.value = ''; // Limpiar selección
+            agencySearch.value = ''; // Limpiar el campo de búsqueda
+            agenciesList.style.display = 'none'; // Ocultar la lista después de guardar
         } else {
             alert('Error al registrar el paciente');
         }
     });
 
-    // Inicializar mostrando todas las agencias
-    displayAgencies();
+    // Inicializar (no cargar agencias automáticamente)
+    agenciesList.style.display = 'none'; // Ocultar la lista inicialmente
 });

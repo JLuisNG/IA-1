@@ -5,12 +5,16 @@
     background-size: cover;
     min-height: 100vh;
     padding: 2rem;
+    position: relative; /* Asegurar que los elementos hijos absolutos se posicionen aquí */
+    z-index: 1; /* Base baja para los elementos principales */
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
+    position: relative; /* Asegurar que los elementos hijos absolutos se posicionen aquí */
+    z-index: 10; /* Aumentar ligeramente para evitar conflictos */
 }
 
 /* Título principal */
@@ -31,6 +35,8 @@
     margin-bottom: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+    position: relative; /* Asegurar que la lista pueda posicionarse dentro de este contenedor */
+    z-index: 20; /* Aumentar el z-index para este contenedor */
 }
 
 /* Títulos de sección con iconos */
@@ -61,34 +67,35 @@
     padding: 0.5rem;
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative; /* Para posicionar la lista debajo del campo */
+    z-index: 30; /* Aumentar el z-index para este contenedor */
 }
 
-.search-container input {
+/* Estilos para el campo de búsqueda */
+#agency-search {
     background: transparent;
     border: none;
     color: #fff;
     padding: 0.75rem 1rem;
     width: 100%;
     font-size: 1rem;
-}
-
-.search-container input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.search-container input:focus {
     outline: none;
 }
 
+#agency-search::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Estilos para el ícono de búsqueda */
 .search-icon {
     padding: 0 1rem;
     color: #3498db;
     font-size: 1.2rem;
 }
 
-/* Grid de agencias */
+/* Grid de agencias (puedes eliminar si no lo usas) */
 .agencies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -137,142 +144,6 @@
 }
 
 /* Servicios requeridos */
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
-
-.service-box {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.service-box h3 {
-    color: #3498db;
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.service-option {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem;
-    color: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.service-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.service-option input[type="checkbox"] {
-    margin-right: 1rem;
-}
-
-/* Campos de formulario */
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    color: #fff;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #3498db;
-    background: rgba(255, 255, 255, 0.15);
-}
-
-/* Botones */
-.button-group {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
-}
-
-.btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 30px;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.btn-primary {
-    background: #3498db;
-    color: #fff;
-    border: none;
-}
-
-.btn-primary:hover {
-    background: #2980b9;
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-
-    .title {
-        font-size: 2rem;
-    }
-
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .button-group {
-        flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
-/* Estilos para la sección de Servicios Requeridos */
 .services-section {
     background: rgba(23, 32, 56, 0.7);
     border-radius: 15px;
@@ -280,6 +151,8 @@
     margin: 2rem 0;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative; /* Asegurar que no interfiera con la lista */
+    z-index: 15; /* Z-index moderado para los servicios, menor que el de agencies-list */
 }
 
 .services-title {
@@ -376,12 +249,29 @@
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
     .services-grid {
         grid-template-columns: 1fr;
     }
 
     .therapy-category {
         padding: 1.2rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -399,4 +289,121 @@
 
 .therapy-category {
     animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Estilos para los campos de formulario */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Botones */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para la lista de agencias (manteniendo la optimización anterior) */
+.agencies-list {
+    display: none; /* Ocultar por defecto */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-height: 200px; /* Reducir altura para que sea más compacta */
+    overflow-y: auto; /* Agregar scroll si hay muchas opciones */
+    position: absolute; /* Posicionar absolutamente dentro del formulario */
+    top: 100%; /* Justo debajo del campo de búsqueda */
+    left: 0;
+    width: 100%; /* Ajustar al ancho del contenedor */
+    z-index: 2000; /* Aumentar significativamente el z-index para que esté por encima de todo */
+    margin-top: 0.5rem; /* Espacio entre el campo y la lista */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra para mejor visibilidad */
+}
+
+/* Estilos para los elementos de la lista */
+.agency-item {
+    padding: 0.5rem 1rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 0.9rem; /* Texto más pequeño para ahorrar espacio */
+}
+
+.agency-item:hover {
+    background: rgba(52, 152, 219, 0.2);
+}
+
+.agency-item.selected {
+    background: rgba(52, 152, 219, 0.3);
+    font-weight: 500;
+}
+
+/* Estilos para el mensaje "No se encontraron agencias" */
+.no-results {
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.9rem;
 }
