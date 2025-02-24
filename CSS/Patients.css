@@ -289,3 +289,193 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #0056b3;
 }
+
+
+/* Agregar estos estilos a tu archivo CSS existente */
+
+/* Estados de pacientes para colores de filas */
+.row-new {
+    background-color: #ff3333 !important; /* Rojo */
+    color: white;
+}
+
+.row-pending {
+    background-color: #e100ff !important; /* Morado */
+    color: white;
+}
+
+.row-accepted {
+    background-color: #ffcc00 !important; /* Amarillo */
+    color: black;
+}
+
+.row-completed {
+    background-color: #ffffff !important; /* Blanco */
+    color: black;
+}
+
+.row-cancelled {
+    background-color: #333333 !important; /* Negro */
+    color: white;
+}
+
+/* Estados de terapeutas para las celdas */
+.therapist-cell {
+    cursor: pointer;
+    position: relative;
+    min-height: 2em;
+}
+
+.therapist-cell.state-unassigned {
+    background-color: #f8f9fa; /* Blanco/gris claro */
+}
+
+.therapist-cell.state-consulting {
+    background-color: #fd7e14; /* Naranja */
+    color: white;
+}
+
+.therapist-cell.state-accepted {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+
+/* Estilo para el selector de terapeutas */
+.therapist-select {
+    width: 100%;
+    padding: 0.25rem;
+    border: none;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px #ced4da;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
+
+/* Estilo para la notificación de referido */
+.referral-notification {
+    padding: 15px;
+    background-color: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.referral-notification i.fa-info-circle {
+    color: #4caf50;
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.referral-notification p {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.referral-notification .close-notification {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+}
+
+/* Estilos para el modal de filtros */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    width: 80%;
+    max-width: 600px;
+    margin: 10vh auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.close-modal:hover {
+    color: #343a40;
+}
+
+/* Estilos para la lista de agencias en búsqueda */
+.search-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.agencies-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 0 0 4px 4px;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.agency-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.agency-item:hover {
+    background-color: #f8f9fa;
+}
+
+.no-results {
+    padding: 8px 12px;
+    color: #6c757d;
+    font-style: italic;
+}

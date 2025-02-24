@@ -1,5 +1,4 @@
 // Pacients.js
-
 document.addEventListener('DOMContentLoaded', () => {
     // Referencias a elementos del DOM
     const patientForm = document.getElementById('patient-form');
@@ -9,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedAgencyInput = document.getElementById('selected-agency');
     const tableBody = document.querySelector('.patients-table tbody') || document.getElementById('referrals-table-body');
     const searchInput = document.querySelector('.search-input');
-
+    
     // Debug: Ver qué elementos están disponibles
     console.log("Elementos disponibles en Pacients.js:", {
         patientForm: !!patientForm,
@@ -63,6 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Rellenar el formulario con datos del referido
             if (selectedAgencyInput) selectedAgencyInput.value = referral.agenciaId;
             if (agencySearch) agencySearch.value = agency.nombre;
+            
+            // Si hay campo de nombre de paciente, sugerir uno basado en la dirección
+            if (patientName && referral.direccion) {
+                patientName.value = `Paciente - ${referral.direccion}`;
+            }
             
             // Verificar si los campos existen antes de asignar valores
             const addressField = document.getElementById('patient-address');
@@ -121,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-
     // Función para cargar agencias
     function loadAgencies() {
         fetch('./json/agencias.json')
@@ -162,37 +165,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
     }
-
     // Función para mostrar agencias en la lista
     function displayAgencies(searchTerm = '') {
         if (!agenciesList) return;
         
         agenciesList.innerHTML = '';
         agenciesList.style.display = 'block';
-
         if (!searchTerm.trim()) {
             agenciesList.innerHTML = '<p class="no-results">Escribe para buscar agencias...</p>';
             return;
         }
-
         const agencies = window.agenciesData || JSON.parse(localStorage.getItem('agencias') || '[]');
         
         const filteredAgencies = agencies.filter(agency =>
             agency.nombre.toLowerCase().includes(searchTerm.toLowerCase())
         );
-
         if (filteredAgencies.length === 0) {
             agenciesList.innerHTML = '<p class="no-results">No se encontraron agencias</p>';
             return;
         }
-
         filteredAgencies.forEach(agency => {
             const agencyElement = document.createElement('div');
             agencyElement.className = 'agency-item';
             agencyElement.textContent = `${agency.nombre} (${agency.referidos} referidos)`;
             agencyElement.dataset.id = agency.id;
             agencyElement.dataset.nombre = agency.nombre;
-
             agencyElement.addEventListener('click', () => {
                 if (selectedAgencyInput && agencySearch) {
                     selectedAgencyInput.value = agency.id;
@@ -204,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             agenciesList.appendChild(agencyElement);
         });
     }
-
     // Función para guardar paciente
     async function savePatient(patientData) {
         try {
@@ -214,11 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Crear nuevo ID
             const patientId = `PAC${Date.now()}`;
             
+            // Asegurar que tengamos un nombre
+            const patientName = patientData.name && patientData.name !== "undefined" ? 
+                patientData.name : 
+                `Paciente ${new Date().toLocaleDateString()}`;
+            
             // Crear nuevo objeto de paciente
             const newPatient = {
                 id: patientId,
                 date: new Date().toLocaleDateString(),
-                name: patientData.name,
+                name: patientName,
                 status: 'new',
                 agenciaId: patientData.agencyId,
                 referralId: patientData.referralId || "",
@@ -258,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
     }
-
     // Actualizar estado del referido
     function updateReferralStatus(referralId, patientId) {
         try {
@@ -275,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al actualizar referido:', error);
         }
     }
-
     // Actualizar contador de pacientes de la agencia
     function updateAgencyPatientCount(agencyId) {
         try {
@@ -291,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al actualizar contador de agencia:', error);
         }
     }
-
     // Event Listeners para el formulario
     if (patientForm) {
         patientForm.addEventListener('submit', async (e) => {
@@ -325,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Recopilar datos
             const patientData = {
-                name: patientName ? patientName.value : "Paciente sin nombre",
+                name: patientName && patientName.value ? patientName.value : `Paciente ${new Date().toLocaleDateString()}`,
                 agencyId: selectedAgencyInput.value,
                 agencyName: selectedAgency.nombre,
                 referralId: referralId, // ID del referido de la URL
@@ -360,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
     // Event listeners para el buscador de agencias
     if (agencySearch) {
         agencySearch.addEventListener('focus', () => {
@@ -369,11 +366,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             displayAgencies(agencySearch.value);
         });
-
         agencySearch.addEventListener('input', (e) => {
             displayAgencies(e.target.value);
         });
-
         agencySearch.addEventListener('blur', () => {
             setTimeout(() => {
                 if (agenciesList && !agenciesList.contains(document.activeElement)) {
@@ -382,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 200);
         });
     }
-
     // Función para cargar datos de pacientes
     function loadPatientsData() {
         if (!tableBody) return;
@@ -396,7 +390,6 @@ document.addEventListener('DOMContentLoaded', () => {
             addPatientToTable(patient);
         });
     }
-
     // Función para añadir paciente a la tabla
     function addPatientToTable(patient) {
         if (!tableBody) return;
@@ -404,10 +397,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const row = document.createElement('tr');
         row.classList.add(`row-${patient.status || 'new'}`);
         
+        // Asegurar que tenemos un nombre
+        const name = patient.name && patient.name !== "undefined" ? 
+            patient.name : 
+            `Paciente ${patient.id.substring(3)}`;
+        
         // Crear celdas
         const cells = [
             createCell(patient.date, 'date-cell'),
-            createCell(patient.name),
+            createCell(name),
             createTherapistCell('PT', patient.therapists?.PT),
             createTherapistCell('PTA', patient.therapists?.PTA),
             createTherapistCell('OT', patient.therapists?.OT),
@@ -427,7 +425,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         tableBody.appendChild(row);
     }
-
     // Función para crear celda
     function createCell(text, className) {
         const cell = document.createElement('td');
@@ -435,7 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (className) cell.classList.add(className);
         return cell;
     }
-
     // Función para crear celda de terapeuta
     function createTherapistCell(type, currentTherapist) {
         const cell = document.createElement('td');
@@ -458,7 +454,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         return cell;
     }
-
     // Función para crear selector de terapeuta
     function createTherapistSelect(type) {
         const select = document.createElement('select');
@@ -509,7 +504,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return select;
     }
 
+    // Corregir pacientes existentes con nombres undefined
+    function fixExistingPatients() {
+        const patients = JSON.parse(localStorage.getItem('pacientes') || '[]');
+        let modified = false;
+        
+        patients.forEach(patient => {
+            if (!patient.name || patient.name === "undefined") {
+                patient.name = `Paciente ${patient.id.substring(3)}`;
+                modified = true;
+            }
+        });
+        
+        if (modified) {
+            localStorage.setItem('pacientes', JSON.stringify(patients));
+            console.log("Pacientes corregidos automáticamente");
+        }
+    }
+    
     // Inicializar
+    fixExistingPatients(); // Corregir pacientes existentes
     loadAgencies();
     if (agenciesList) agenciesList.style.display = 'none';
     if (tableBody) loadPatientsData();

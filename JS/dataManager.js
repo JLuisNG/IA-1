@@ -1,143 +1,207 @@
-// dataManager.js
+// dataManager.js - Manejador central de datos
 
-// Función para actualizar contadores de agencia
-async function actualizarContadoresAgencia(agenciaId, tipo) {
-    try {
-        // Leer el archivo de agencias
-        const respuestaAgencias = await fetch('../json/agencias.json');
-        const agencias = await respuestaAgencias.json();
-
-        // Encontrar la agencia correcta
-        const agencia = agencias.find(ag => ag.id === agenciaId);
-        if (!agencia) {
-            console.error('Agencia no encontrada');
-            return;
-        }
-
-        // Actualizar el contador correspondiente
-        if (tipo === 'referido') {
-            agencia.referidos++;
-        } else if (tipo === 'paciente') {
-            agencia.pacientesActivos++;
-        }
-
-        // Aquí normalmente guardarías los cambios en el archivo
-        console.log('Contadores actualizados:', agencia);
-        return agencia;
-    } catch (error) {
-        console.error('Error al actualizar contadores:', error);
-        throw error;
-    }
-}
-
-// Función para crear nuevo referido
-async function crearReferido(datosReferido) {
-    try {
-        // Leer archivos actuales
-        const respuestaReferidos = await fetch('../json/referrals.json');
-        const referidos = await respuestaReferidos.json();
-
-        // Crear nuevo ID para el referido
-        const nuevoId = `REF${String(referidos.length + 1).padStart(3, '0')}`;
-
-        // Crear el nuevo referido
-        const nuevoReferido = {
-            id: nuevoId,
-            pacienteId: "",  // Se llenará cuando se cree el paciente
-            agenciaId: datosReferido.agenciaId,
-            fecha: new Date().toISOString().split('T')[0],
-            estado: "pendiente",
-            trabajadorSocial: datosReferido.trabajadorSocial,
-            diagnostico: datosReferido.diagnostico,
-            seguro: datosReferido.seguro,
-            servicio: datosReferido.servicio,
-            frecuencia: datosReferido.frecuencia,
-            notas: datosReferido.notas
-        };
-
-        // Actualizar contadores de la agencia
-        await actualizarContadoresAgencia(datosReferido.agenciaId, 'referido');
-
-        // Aquí normalmente guardarías los cambios en el archivo
-        console.log('Nuevo referido creado:', nuevoReferido);
-        return nuevoReferido;
-    } catch (error) {
-        console.error('Error al crear referido:', error);
-        throw error;
-    }
-}
-
-// Función para crear nuevo paciente
-async function crearPaciente(datosPaciente, referidoId) {
-    try {
-        // Leer archivos actuales
-        const respuestaPacientes = await fetch('../json/pacientes.json');
-        const pacientes = await respuestaPacientes.json();
-
-        // Crear nuevo ID para el paciente
-        const nuevoId = `PAC${String(pacientes.length + 1).padStart(3, '0')}`;
-
-        // Crear el nuevo paciente
-        const nuevoPaciente = {
-            id: nuevoId,
-            nombre: datosPaciente.nombre,
-            agenciaId: datosPaciente.agenciaId,
-            referralId: referidoId,
-            fechaIngreso: new Date().toISOString().split('T')[0],
-            estado: "activo",
-            informacionMedica: {
-                diagnostico: datosPaciente.diagnostico,
-                tratamiento: datosPaciente.tratamiento,
-                personalAsignado: datosPaciente.personalAsignado
-            },
-            contacto: {
-                telefono: datosPaciente.telefono,
-                direccion: datosPaciente.direccion,
-                emergencia: datosPaciente.emergencia
+class DataManager {
+    // Métodos para obtener datos
+    static async getAgencias() {
+        try {
+            // Primero intentamos cargar desde localStorage
+            const storedData = localStorage.getItem('agencias');
+            if (storedData) {
+                return JSON.parse(storedData);
             }
-        };
-
-        // Actualizar contadores de la agencia
-        await actualizarContadoresAgencia(datosPaciente.agenciaId, 'paciente');
-
-        // Actualizar el referido con el ID del paciente
-        await actualizarReferido(referidoId, nuevoId);
-
-        // Aquí normalmente guardarías los cambios en el archivo
-        console.log('Nuevo paciente creado:', nuevoPaciente);
-        return nuevoPaciente;
-    } catch (error) {
-        console.error('Error al crear paciente:', error);
-        throw error;
-    }
-}
-
-// Función para actualizar referido con ID de paciente
-async function actualizarReferido(referidoId, pacienteId) {
-    try {
-        // Leer el archivo de referidos
-        const respuestaReferidos = await fetch('../json/referrals.json');
-        const referidos = await respuestaReferidos.json();
-
-        // Encontrar y actualizar el referido
-        const referido = referidos.find(ref => ref.id === referidoId);
-        if (referido) {
-            referido.pacienteId = pacienteId;
-            referido.estado = "activo";
             
-            // Aquí normalmente guardarías los cambios en el archivo
-            console.log('Referido actualizado:', referido);
+            // Si no hay datos, cargar del JSON
+            const response = await fetch('./json/agencias.json');
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            const data = await response.json();
+            
+            // Guardar en localStorage
+            localStorage.setItem('agencias', JSON.stringify(data));
+            return data;
+        } catch (error) {
+            console.error('Error cargando agencias:', error);
+            return [];
         }
-    } catch (error) {
-        console.error('Error al actualizar referido:', error);
-        throw error;
+    }
+    
+    static async getPacientes() {
+        try {
+            const storedData = localStorage.getItem('pacientes');
+            return storedData ? JSON.parse(storedData) : [];
+        } catch (error) {
+            console.error('Error cargando pacientes:', error);
+            return [];
+        }
+    }
+    
+    static async getReferrals() {
+        try {
+            const storedData = localStorage.getItem('referrals');
+            return storedData ? JSON.parse(storedData) : [];
+        } catch (error) {
+            console.error('Error cargando referidos:', error);
+            return [];
+        }
+    }
+    
+    // Método para precargar agencias
+    static async preloadAgencias() {
+        const agencias = await this.getAgencias();
+        window.agenciasData = agencias;
+        return agencias;
+    }
+    
+    // Métodos para guardar datos
+    static async saveAgencias(data) {
+        localStorage.setItem('agencias', JSON.stringify(data));
+    }
+    
+    static async savePacientes(data) {
+        localStorage.setItem('pacientes', JSON.stringify(data));
+    }
+    
+    static async saveReferrals(data) {
+        localStorage.setItem('referrals', JSON.stringify(data));
+    }
+    
+    // Métodos para generar IDs únicos
+    static generatePacienteId() {
+        return `PAC${Date.now()}`;
+    }
+    
+    static generateReferralId() {
+        return `REF${Date.now()}`;
+    }
+    
+    // Métodos para actualizar contadores
+    static async incrementAgencyReferrals(agencyId) {
+        const agencias = await this.getAgencias();
+        const agencyIndex = agencias.findIndex(a => a.id === agencyId);
+        
+        if (agencyIndex !== -1) {
+            agencias[agencyIndex].referidos = (agencias[agencyIndex].referidos || 0) + 1;
+            await this.saveAgencias(agencias);
+            return true;
+        }
+        return false;
+    }
+    
+    static async incrementAgencyPatients(agencyId) {
+        const agencias = await this.getAgencias();
+        const agencyIndex = agencias.findIndex(a => a.id === agencyId);
+        
+        if (agencyIndex !== -1) {
+            agencias[agencyIndex].pacientesActivos = (agencias[agencyIndex].pacientesActivos || 0) + 1;
+            await this.saveAgencias(agencias);
+            return true;
+        }
+        return false;
+    }
+    
+    // Métodos para crear nuevos elementos
+    static async createReferral(data) {
+        const referrals = await this.getReferrals();
+        const referralId = this.generateReferralId();
+        
+        const newReferral = {
+            id: referralId,
+            fecha: new Date().toISOString().split('T')[0],
+            pacienteId: "",
+            agenciaId: data.agencyId,
+            estado: "pendiente",
+            servicios: data.services || [],
+            direccion: data.address || "",
+            zipCode: data.zipCode || "",
+            notas: data.notes || ""
+        };
+        
+        referrals.push(newReferral);
+        await this.saveReferrals(referrals);
+        
+        // Actualizar contador de la agencia
+        await this.incrementAgencyReferrals(data.agencyId);
+        
+        return newReferral;
+    }
+    
+    static async createPatient(data) {
+        const patients = await this.getPacientes();
+        const patientId = this.generatePacienteId();
+        
+        // Asegurar que tenemos un nombre
+        const patientName = data.name && data.name !== "undefined" ? 
+            data.name : 
+            `Paciente ${new Date().toLocaleDateString()}`;
+        
+        const newPatient = {
+            id: patientId,
+            date: new Date().toLocaleDateString(),
+            name: patientName,
+            status: 'new',
+            agenciaId: data.agencyId,
+            referralId: data.referralId || "",
+            therapists: {
+                PT: data.services.includes('PT') ? null : null,
+                PTA: data.services.includes('PTA') ? null : null,
+                OT: data.services.includes('OT') ? null : null,
+                COTA: data.services.includes('COTA') ? null : null,
+                ST: data.services.includes('ST') ? null : null,
+                STA: null
+            },
+            decline: '',
+            evalDate: new Date().toLocaleDateString(),
+            address: data.address || "",
+            zipCode: data.zipCode || "",
+            notes: data.notes || "",
+            agency: data.agencyName || ""
+        };
+        
+        patients.push(newPatient);
+        await this.savePacientes(patients);
+        
+        // Si viene de un referido, actualizar su estado
+        if (data.referralId) {
+            await this.updateReferralStatus(data.referralId, patientId);
+        }
+        
+        // Actualizar contador de la agencia
+        await this.incrementAgencyPatients(data.agencyId);
+        
+        return newPatient;
+    }
+    
+    static async updateReferralStatus(referralId, patientId) {
+        const referrals = await this.getReferrals();
+        const referralIndex = referrals.findIndex(r => r.id === referralId);
+        
+        if (referralIndex !== -1) {
+            referrals[referralIndex].pacienteId = patientId;
+            referrals[referralIndex].estado = "activo";
+            await this.saveReferrals(referrals);
+            return true;
+        }
+        return false;
+    }
+    
+    static async updateTherapist(patientId, therapistType, therapistName) {
+        const patients = await this.getPacientes();
+        const patientIndex = patients.findIndex(p => p.id === patientId);
+        
+        if (patientIndex !== -1 && patients[patientIndex].therapists) {
+            patients[patientIndex].therapists[therapistType] = therapistName;
+            await this.savePacientes(patients);
+            return true;
+        }
+        return false;
     }
 }
 
-// Exportar las funciones
-export {
-    crearReferido,
-    crearPaciente,
-    actualizarContadoresAgencia,
-    actualizarReferido
-};
+// Exportar para uso global
+window.DataManager = DataManager;
+
+// Precargar agencias al cargar la página
+DataManager.preloadAgencias().then(() => {
+    console.log("Agencias precargadas:", window.agenciasData);
+});

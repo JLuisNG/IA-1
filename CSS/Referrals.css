@@ -407,3 +407,153 @@
     padding: 0.5rem;
     font-size: 0.9rem;
 }
+
+
+/* Este código debe agregarse a tu archivo Referrals.css */
+
+/* Estilos mejorados para búsqueda de agencias */
+.search-container {
+    position: relative;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.agencies-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0 0 8px 8px;
+    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none; /* Oculto por defecto */
+}
+
+.agency-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    transition: background-color 0.2s;
+}
+
+.agency-item:hover {
+    background-color: #f5f5f5;
+}
+
+.agency-item.no-results {
+    color: #999;
+    font-style: italic;
+}
+
+.agency-item.search-hint {
+    color: #777;
+    font-style: italic;
+    background-color: #f8f8f8;
+}
+
+/* Asegúrate que el campo de búsqueda tenga un buen contraste */
+#agency-search {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+}
+
+#agency-search:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+/* Añadir indicadores visuales */
+.search-container:after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #999;
+    pointer-events: none;
+}
+
+.search-container.active:after {
+    border-top: none;
+    border-bottom: 5px solid #3498db;
+}
+
+/* Para resolver problemas de capas y visibilidad */
+.search-container {
+    z-index: 1000;
+}
+
+.agencies-list {
+    z-index: 1001;
+}
+
+/* Estados de pacientes para colores de filas */
+.row-new {
+    background-color: #ff3333 !important; /* Rojo */
+    color: white;
+}
+
+.row-pending {
+    background-color: #e100ff !important; /* Morado */
+    color: white;
+}
+
+.row-accepted {
+    background-color: #ffcc00 !important; /* Amarillo */
+    color: black;
+}
+
+.row-completed {
+    background-color: #ffffff !important; /* Blanco */
+    color: black;
+}
+
+.row-cancelled {
+    background-color: #333333 !important; /* Negro */
+    color: white;
+}
+
+/* Estados de terapeutas para las celdas */
+.therapist-cell {
+    cursor: pointer;
+    position: relative;
+    min-height: 2em;
+}
+
+.therapist-cell.state-unassigned {
+    background-color: #f8f9fa; /* Blanco/gris claro */
+}
+
+.therapist-cell.state-consulting {
+    background-color: #fd7e14; /* Naranja */
+    color: white;
+}
+
+.therapist-cell.state-accepted {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+
+/* Estilo para el selector de terapeutas */
+.therapist-select {
+    width: 100%;
+    padding: 0.25rem;
+    border: none;
+    background-color: #fff;
+    box-shadow: 0 0 0 1px #ced4da;
+    border-radius: 3px;
+    font-size: 0.9rem;
+}
